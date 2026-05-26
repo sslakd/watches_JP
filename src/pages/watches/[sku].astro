@@ -14,7 +14,11 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 const sameBrand = products.filter(p => p.brand === product.brand && p.sku !== product.sku).slice(0, 6);
 const samePrice = products.filter(p => Math.abs(p.price_usd - product.price_usd) < 50 && p.sku !== product.sku).slice(0, 3);
-const relatedAll = [...sameBrand, ...samePrice].slice(0, 6);
+const relatedAll = [...sameBrand, ...samePrice].slice(0, 6).map(r => ({
+  ...r,
+  jpName: translateProductName(r.name),
+  jpy: toJPY(r.price_usd),
+}));
 const randomQuote = [
   '「時は、誰にも平等に流れる。しかし、その刻み方は人それぞれだ。」',
   '「一本の時計が、一つの人生を変えることがある。」',
@@ -28,7 +32,7 @@ const specLines = [
   { label: 'カテゴリー', value: translateCategory(product.category) },
 ];
 ---
-<BaseLayout title={`${product.brand} — "${product.name.slice(0, 50)}"`} description={product.description}>
+<BaseLayout title={`${product.brand} — "${translateProductName(product.name).slice(0, 50)}"`} description={translateDescription(product.description)}>
   <!-- Breadcrumb -->
   <nav class="breadcrumb">
     <a href="/">ホーム</a>
@@ -105,12 +109,12 @@ const specLines = [
         {relatedAll.map((r, i) => (
           <a href={`/watches/${r.sku}`} class="related-card" style={`--i: ${i}`}>
             <div class="related-img">
-              <img src={r.image} alt={r.name} loading="lazy" />
+              <img src={r.image} alt={r.jpName} loading="lazy" />
             </div>
             <div class="related-info">
               <div class="related-brand">{r.brand}</div>
-              <h4>{r.name.length > 35 ? r.name.slice(0, 35) + '…' : r.name}</h4>
-              <span class="related-price">${r.price_usd.toLocaleString()}</span>
+              <h4>{r.jpName.length > 35 ? r.jpName.slice(0, 35) + '…' : r.jpName}</h4>
+              <span class="related-price">¥{r.jpy}</span>
             </div>
           </a>
         ))}

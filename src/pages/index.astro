@@ -110,7 +110,7 @@ const storyWatch = (() => { const p = products[5]; return {...p, jpy: toJPY(p.pr
               {brandWatches.map(w => (
                 <a href={`/watches/${w.sku}`} class="brand-mini-card">
                   <img src={w.image} alt={translateProductName(w.name)} loading="lazy" />
-                  <span>${w.price_usd.toLocaleString()}</span>
+                  <span>¥{toJPY(w.price_usd)}</span>
                 </a>
               ))}
             </div>
