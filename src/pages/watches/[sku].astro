@@ -79,6 +79,16 @@ const specLines = [
           ))}
         </div>
       </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button class="btn-add-cart">カートに入れる</button>
+        <button class="btn-buy-now">今すぐ購入</button>
+      </div>
+      <div class="promo-banner">
+        🚚 5000円以上で送料無料<br />
+        30日以内返品可能
+      </div>
     </div>
   </div>
 
@@ -203,6 +213,46 @@ const specLines = [
   .narrative-extended { font-style: italic; color: var(--color-muted) !important; font-size: 0.8rem !important; }
 
   /* Specs */
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 0.8rem;
+    margin: 1.5rem 0 0.8rem;
+  }
+  .btn-add-cart, .btn-buy-now {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    font-size: 0.82rem;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-sans);
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .btn-add-cart {
+    background: var(--color-bg);
+    color: var(--color-text);
+    border: 1px solid var(--color-text);
+  }
+  .btn-add-cart:hover {
+    background: var(--color-border);
+  }
+  .btn-buy-now {
+    background: var(--color-text);
+    color: white;
+  }
+  .btn-buy-now:hover {
+    opacity: 0.85;
+  }
+  .promo-banner {
+    background: #f5f0e8;
+    padding: 0.8rem;
+    font-size: 0.75rem;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+
   .specs {
     border-top: 1px solid var(--color-border);
     padding-top: 1.2rem;
