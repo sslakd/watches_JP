@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import products from '../../data/products.json';
+
+export async function getStaticPaths() {
+  return products.map((product) => ({
+    params: { sku: product.sku },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+---
+<BaseLayout title={product.name} description={product.description}>
+  <div style="max-width: 900px; margin: 0 auto; padding: var(--spacing-lg) var(--spacing-md);">
+    <a href="/watches" style="color: var(--color-muted); text-decoration: none; font-size: 0.85rem;">&larr; コレクションに戻る</a>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-top: var(--spacing-lg);">
+      <div>
+        <img src={product.image} alt={product.name} style="width: 100%; aspect-ratio: 1; object-fit: cover; background: #e8e3dd;" />
+      </div>
+      <div>
+        <div style="font-size: 0.75rem; color: var(--color-accent); font-family: var(--font-serif); margin-bottom: 0.5rem;">{product.brand}</div>
+        <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">{product.name}</h1>
+        <div style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--color-accent); margin-bottom: var(--spacing-md);">${product.price_usd.toLocaleString()}</div>
+        
+        <div style="border-top: 1px solid var(--color-border); padding-top: var(--spacing-md);">
+          <p style="font-size: 0.85rem; color: #555; line-height: 1.8;">{product.description}</p>
+        </div>
+        
+        <div style="margin-top: var(--spacing-md); font-size: 0.8rem; color: var(--color-muted);">
+          <p>SKU: {product.sku}</p>
+          <p>MPN: {product.mpn}</p>
+          <p>カテゴリー: {product.category}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
