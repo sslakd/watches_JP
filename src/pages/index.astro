@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import products from '../data/products.json';
+const featured = products.slice(0, 6);
 ---
 <BaseLayout title="時計物語" description="すべての時計に物語がある。クラフツマンシップ、伝統、そして大切な瞬間の物語。">
   <div class="hero">
@@ -8,8 +10,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p>時計は単なる道具ではありません。それは、あなたの人生の大切な瞬間に寄り添う存在です。職人技、伝統、そして心に響くストーリーを持つ時計たちを、厳選してご紹介します。</p>
     <a href="/watches" class="btn" style="margin-top: 2rem;">時計を探す</a>
   </div>
-  <div style="text-align: center; padding: var(--spacing-lg) 0;">
-    <h2>注目の物語</h2>
-    <p style="color: var(--color-muted);">準備中 — 厳選コレクションを近日公開予定。</p>
+
+  <div style="padding: var(--spacing-lg) 0;">
+    <h2 style="text-align: center;">注目のコレクション</h2>
+    <div class="card-grid">
+      {featured.map((product) => (
+        <a class="card" href={`/watches/${product.sku}`}>
+          <img src={product.image} alt={product.name} loading="lazy" />
+          <div class="maker">{product.brand}</div>
+          <h3>{product.name}</h3>
+          <div class="price">${product.price_usd.toLocaleString()}</div>
+        </a>
+      ))}
+    </div>
   </div>
 </BaseLayout>

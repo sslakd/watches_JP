@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import products from '../data/products.json';
 ---
 <BaseLayout title="腕時計" description="厳選された時計コレクション — それぞれに物語があります。">
   <div class="hero">
@@ -7,6 +8,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h1>あなたの物語を<br>見つけてください</h1>
     <p>職人技、伝統、そしてストーリー性を重視して選ばれた時計たち。</p>
   </div>
-  <div class="card-grid" id="watches-grid"></div>
-  <div style="text-align: center; padding: var(--spacing-xl) 0;"><p style="color: var(--color-muted);">毎日新しい物語が追加されています。</p></div>
+
+  <div class="card-grid">
+    {products.slice(0, 50).map((product) => (
+      <a class="card" href={`/watches/${product.sku}`}>
+        <img src={product.image} alt={product.name} loading="lazy" />
+        <div class="maker">{product.brand}</div>
+        <h3>{product.name}</h3>
+        <div class="price">${product.price_usd.toLocaleString()}</div>
+      </a>
+    ))}
+  </div>
+
+  <div style="text-align: center; padding: var(--spacing-lg) 0;">
+    <p style="color: var(--color-muted);">{products.length}点の時計を厳選 — 毎日新しい物語が追加されています。</p>
+  </div>
 </BaseLayout>
