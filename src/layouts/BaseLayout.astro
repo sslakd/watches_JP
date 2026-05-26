@@ -1,99 +1,144 @@
 ---
+export interface Props {
+  title: string;
+  description: string;
+}
 const { title, description } = Astro.props;
 ---
-
 <!DOCTYPE html>
 <html lang="ja">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title} — 時計物語</title>
-    <meta name="description" content={description} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet" />
-    <style>
-      :root {
-        --font-serif: 'Noto Serif JP', 'Yu Mincho', serif;
-        --font-sans: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
-        --color-bg: #f8f6f2;
-        --color-text: #2c2c2c;
-        --color-accent: #8b0000;
-        --color-muted: #888;
-        --color-border: #d4cfc6;
-        --spacing-sm: 0.5rem;
-        --spacing-md: 1.5rem;
-        --spacing-lg: 3rem;
-        --spacing-xl: 6rem;
-      }
-      * { margin: 0; padding: 0; box-sizing: border-box; }
-      body {
-        font-family: var(--font-sans);
-        font-weight: 300;
-        color: var(--color-text);
-        background: var(--color-bg);
-        line-height: 2;
-        letter-spacing: 0.02em;
-      }
-      .container { max-width: 1000px; margin: 0 auto; padding: 0 var(--spacing-md); }
-      nav {
-        padding: var(--spacing-lg) 0;
-        display: flex; justify-content: space-between; align-items: flex-start;
-        border-bottom: 1px solid var(--color-border);
-        position: relative;
-      }
-      nav::after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 60px;
-        height: 2px;
-        background: var(--color-accent);
-      }
-      nav .logo { font-family: var(--font-serif); font-size: 1.3rem; color: var(--color-text); text-decoration: none; font-weight: 300; }
-      nav .logo span { color: var(--color-accent); }
-      nav a { color: var(--color-muted); text-decoration: none; font-size: 0.85rem; margin-left: var(--spacing-md); transition: color 0.2s; }
-      nav a:hover { color: var(--color-text); }
-      footer {
-        text-align: center;
-        padding: var(--spacing-xl) 0;
-        border-top: 1px solid var(--color-border);
-        color: var(--color-muted);
-        font-size: 0.8rem;
-      }
-      footer .brand { font-family: var(--font-serif); font-size: 1.1rem; color: var(--color-text); margin-bottom: var(--spacing-md); }
-      h1, h2, h3 { font-family: var(--font-serif); font-weight: 300; letter-spacing: 0.05em; }
-      h1 { font-size: 2.5rem; line-height: 1.4; margin-bottom: var(--spacing-md); }
-      h2 { font-size: 1.6rem; margin-bottom: var(--spacing-md); letter-spacing: 0.08em; }
-      .hero { text-align: center; padding: var(--spacing-xl) 0 var(--spacing-lg); max-width: 600px; margin: 0 auto; }
-      .hero .subtitle { font-family: var(--font-serif); font-size: 0.85rem; color: var(--color-accent); margin-bottom: var(--spacing-md); }
-      .hero p { color: var(--color-muted); font-size: 0.95rem; margin: var(--spacing-md) auto 0; line-height: 2.2; }
-      .btn { display: inline-block; border: 1px solid var(--color-text); padding: 0.7rem 2rem; text-decoration: none; color: var(--color-text); font-size: 0.85rem; transition: all 0.3s; font-family: var(--font-sans); }
-      .btn:hover { background: var(--color-text); color: white; }
-      .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--spacing-lg); padding: var(--spacing-lg) 0; }
-      .card { text-decoration: none; color: inherit; }
-      .card img { width: 100%; aspect-ratio: 1; object-fit: cover; background: #e8e3dd; }
-      .card .maker { font-size: 0.75rem; color: var(--color-accent); margin: 0.5rem 0 0.2rem; font-family: var(--font-serif); }
-      .card h3 { font-size: 1rem; }
-      .card .price { font-family: var(--font-serif); color: var(--color-muted); font-size: 0.95rem; }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <nav>
-        <a href="/" class="logo"><span>時計</span>物語</a>
-        <div>
-          <a href="/">物語</a>
-          <a href="/watches">腕時計</a>
-          <a href="/about">このサイトについて</a>
-        </div>
-      </nav>
-      <slot />
-      <footer>
-        <div class="brand">時計物語</div>
-        <p>時計には、必ず物語がある。</p>
-        <p style="margin-top: 0.5rem;">© 2026 時計物語</p>
-      </footer>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} — 時計物語</title>
+  <meta name="description" content={description} />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600;700&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --font-serif: "Noto Serif JP", "Yu Mincho", "Shippori Mincho", serif;
+      --font-sans: "Zen Kaku Gothic New", "Hiragino Sans", sans-serif;
+      --color-bg: #faf8f5;
+      --color-text: #1a1a1a;
+      --color-accent: #8b1a1a;
+      --color-gold: #b8963e;
+      --color-muted: #8a8a8a;
+      --color-border: #e5ddd0;
+      --color-card-bg: #ffffff;
+      --color-overlay: rgba(0,0,0,0.03);
+      --spacing-sm: .5rem;
+      --spacing-md: 1.5rem;
+      --spacing-lg: 3rem;
+      --spacing-xl: 6rem;
+      --spacing-2xl: 10rem;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 2;
+      letter-spacing: 0.04em;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; height: auto; }
+
+    /* Typography */
+    h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; letter-spacing: 0.06em; }
+    h1 { font-size: 2.8rem; line-height: 1.4; }
+    h2 { font-size: 1.8rem; line-height: 1.5; margin-bottom: var(--spacing-lg); }
+    @media (max-width: 768px) {
+      h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.3rem; }
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(250,248,245,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(229,221,208,0.4);
+    }
+    nav .logo {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      color: var(--color-text);
+      text-decoration: none;
+      letter-spacing: 0.12em;
+    }
+    nav .logo span { color: var(--color-gold); }
+    nav .nav-links { display: flex; gap: 2rem; align-items: center; }
+    nav .nav-links a {
+      color: var(--color-muted);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      transition: color 0.3s;
+      text-transform: uppercase;
+    }
+    nav .nav-links a:hover { color: var(--color-text); }
+    @media (max-width: 600px) {
+      nav { padding: 1rem; }
+      nav .nav-links { gap: 1rem; }
+      nav .nav-links a { font-size: 0.65rem; }
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: var(--spacing-xl) 2rem;
+      border-top: 1px solid var(--color-border);
+      color: var(--color-muted);
+      font-size: 0.75rem;
+      background: linear-gradient(to bottom, var(--color-bg), #f0ece4);
+    }
+    footer .brand {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      color: var(--color-text);
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.15em;
+    }
+    footer .tagline { font-style: italic; margin-bottom: 1.5rem; color: var(--color-gold); font-size: 0.8rem; }
+    footer .links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    footer .links a { color: var(--color-muted); text-decoration: none; font-size: 0.7rem; }
+    footer .links a:hover { color: var(--color-text); }
+    footer .copy { font-size: 0.65rem; opacity: 0.6; }
+
+    /* Page padding for fixed nav */
+    .page-content { padding-top: 70px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/" class="logo"><span>時計</span>物語</a>
+    <div class="nav-links">
+      <a href="/">物語</a>
+      <a href="/watches">時計</a>
+      <a href="/about">この場所</a>
     </div>
-  </body>
+  </nav>
+
+  <main class="page-content">
+    <slot />
+  </main>
+
+  <footer>
+    <div class="brand">時計物語</div>
+    <div class="tagline">— すべての時計に、物語がある —</div>
+    <div class="links">
+      <a href="/">ホーム</a>
+      <a href="/watches">腕時計</a>
+      <a href="/about">このサイトについて</a>
+    </div>
+    <div class="copy">© 2026 時計物語 — Toki no Monogatari</div>
+  </footer>
+</body>
 </html>

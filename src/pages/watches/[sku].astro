@@ -10,219 +10,294 @@ export async function getStaticPaths() {
 }
 
 const { product } = Astro.props;
-const related = products.filter(p => p.brand === product.brand && p.sku !== product.sku).slice(0, 4);
-const features = [
-  `ブランド: ${product.brand}`,
-  `型番: ${product.mpn}`,
-  `カテゴリー: ${product.category}`,
-  `新品・正規品保証`,
-  `送料無料(日本国内)`,
+const sameBrand = products.filter(p => p.brand === product.brand && p.sku !== product.sku).slice(0, 6);
+const samePrice = products.filter(p => Math.abs(p.price_usd - product.price_usd) < 50 && p.sku !== product.sku).slice(0, 3);
+const relatedAll = [...sameBrand, ...samePrice].slice(0, 6);
+const randomQuote = [
+  '「時は、誰にも平等に流れる。しかし、その刻み方は人それぞれだ。」',
+  '「一本の時計が、一つの人生を変えることがある。」',
+  '「正確さよりも大切なもの。それは、その時計が語る物語だ。」',
+  '「時間を計るのではなく、時間を味わうために。」',
+][Math.floor(Math.random() * 4)];
+const specLines = [
+  { label: 'ブランド', value: product.brand },
+  { label: '型番', value: product.mpn },
+  { label: 'SKU', value: product.sku },
+  { label: 'カテゴリー', value: product.category },
 ];
 ---
-<BaseLayout title={product.name} description={product.description}>
-  <div class="detail-page">
-    <!-- Breadcrumb -->
-    <nav class="breadcrumb">
-      <a href="/">ホーム</a>
-      <span>/</span>
-      <a href="/watches">腕時計</a>
-      <span>/</span>
-      <span class="current">{product.brand}</span>
-    </nav>
+<BaseLayout title={`${product.brand} — "${product.name.slice(0, 50)}"`} description={product.description}>
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb">
+    <a href="/">ホーム</a>
+    <span>›</span>
+    <a href="/watches">時計コレクション</a>
+    <span>›</span>
+    <span class="current">{product.brand}</span>
+  </nav>
 
-    <div class="detail-main">
-      <!-- Image Gallery -->
-      <div class="gallery-section">
-        <div class="main-image">
-          <img src={product.image} alt={product.name} />
-        </div>
-        <div class="thumbnails">
-          <img src={product.image} alt="" class="active" />
-          <img src={product.image} alt="" />
-          <img src={product.image} alt="" />
-          <img src={product.image} alt="" />
-        </div>
-      </div>
-
-      <!-- Product Info -->
-      <div class="detail-info">
-        <div class="brand-name">{product.brand}</div>
-        <h1 class="product-title">{product.name}</h1>
-
-        <div class="price-section">
-          <div class="current-price">${product.price_usd.toLocaleString()}</div>
-          <div class="original-price">${(product.price_usd * 1.2).toFixed(0)}</div>
-          <span class="discount">-20%</span>
-        </div>
-
-        <div class="payment-info">
-          毎月の分割払い: <strong>${(product.price_usd / 12).toFixed(2)}/月</strong>
-        </div>
-
-        <div class="action-buttons">
-          <button class="btn-add-cart">カートに入れる</button>
-          <button class="btn-buy-now">今すぐ購入</button>
-        </div>
-
-        <div class="promo-banner">
-          🚚 5000円以上で送料無料<br />
-          30日以内返品可能
-        </div>
-
-        <!-- Features -->
-        <div class="features-list">
-          {features.map(f => <div class="feature-item">✓ {f}</div>)}
-        </div>
-
-        <!-- Description -->
-        <div class="description-section">
-          <h3>商品説明</h3>
-          <p>{product.description}</p>
-          <p class="spec-item"><strong>SKU:</strong> {product.sku}</p>
-          <p class="spec-item"><strong>MPN:</strong> {product.mpn}</p>
-        </div>
+  <div class="story-detail">
+    <!-- Left: The Watch -->
+    <div class="watch-gallery">
+      <div class="gallery-main">
+        <img src={product.image} alt={product.name} />
       </div>
     </div>
 
-    <!-- Related Products -->
-    {related.length > 0 && (
-      <div class="related-section">
-        <h2>同じブランドの商品</h2>
-        <div class="related-grid">
-          {related.map(r => (
-            <a class="related-card" href={`/watches/${r.sku}`}>
-              <div class="related-img">
-                <img src={r.image} alt={r.name} loading="lazy" />
-              </div>
-              <div class="related-info">
-                <div class="related-brand">{r.brand}</div>
-                <div class="related-name">{r.name.length > 40 ? r.name.slice(0, 40) + '…' : r.name}</div>
-                <div class="related-price">${r.price_usd.toLocaleString()}</div>
-              </div>
-            </a>
+    <!-- Right: The Story -->
+    <div class="watch-story">
+      <!-- Atmosphere quote -->
+      <div class="atmosphere-quote">{randomQuote}</div>
+
+      <div class="brand-heading">{product.brand}</div>
+      <h1 class="watch-title">{product.name.length > 70 ? product.name.slice(0, 70) + '…' : product.name}</h1>
+
+      <div class="price-row">
+        <span class="price-current">${product.price_usd.toLocaleString()}</span>
+        <span class="price-original">${(product.price_usd * 1.2).toFixed(0)}</span>
+        <span class="price-discount">-20%</span>
+      </div>
+
+      <!-- The Narrative -->
+      <div class="narrative">
+        <p>{product.description}</p>
+        <p class="narrative-extended">
+          {product.brand}の技術と情熱が込められたこの一本。<br />
+          日常の一瞬を特別に変える、そんな出会いをあなたに。
+        </p>
+      </div>
+
+      <!-- Specs -->
+      <div class="specs">
+        <h3>時計の詳細</h3>
+        <div class="specs-grid">
+          {specLines.map(s => (
+            <div class="spec-row">
+              <span class="spec-label">{s.label}</span>
+              <span class="spec-value">{s.value}</span>
+            </div>
           ))}
         </div>
       </div>
-    )}
+    </div>
+  </div>
+
+  <!-- Related Stories -->
+  {relatedAll.length > 0 && (
+    <section class="related-stories">
+      <div class="related-header">
+        <div class="section-label">— 関連する物語 —</div>
+        <h2>同じブランドの<br>もう一つの物語</h2>
+      </div>
+      <div class="related-grid">
+        {relatedAll.map((r, i) => (
+          <a href={`/watches/${r.sku}`} class="related-card" style={`--i: ${i}`}>
+            <div class="related-img">
+              <img src={r.image} alt={r.name} loading="lazy" />
+            </div>
+            <div class="related-info">
+              <div class="related-brand">{r.brand}</div>
+              <h4>{r.name.length > 35 ? r.name.slice(0, 35) + '…' : r.name}</h4>
+              <span class="related-price">${r.price_usd.toLocaleString()}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- Back CTA -->
+  <div class="back-cta">
+    <a href="/watches" class="btn-outline">← すべての時計に戻る</a>
   </div>
 </BaseLayout>
 
 <style>
-  .detail-page { max-width: 1100px; margin: 0 auto; padding: 1rem; }
-  .breadcrumb { font-size: 0.8rem; color: var(--color-muted); margin-bottom: 1.5rem; }
+  .breadcrumb {
+    max-width: 1100px;
+    margin: 2rem auto 0;
+    padding: 1rem 2rem 0;
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
   .breadcrumb a { color: var(--color-muted); text-decoration: none; }
   .breadcrumb a:hover { color: var(--color-text); }
   .breadcrumb span { margin: 0 0.5rem; }
   .breadcrumb .current { color: var(--color-text); }
 
-  .detail-main { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+  .story-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 2rem;
+    gap: 3rem;
+  }
 
   /* Gallery */
-  .gallery-section { }
-  .main-image {
-    background: #f8f6f2;
+  .watch-gallery {}
+  .gallery-main {
+    background: #f5f0e8;
     aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid var(--color-border);
+    position: sticky;
+    top: 90px;
   }
-  .main-image img {
-    max-width: 90%;
-    max-height: 90%;
+  .gallery-main img {
+    max-width: 85%;
+    max-height: 85%;
     object-fit: contain;
+    animation: floatIn 0.8s ease both;
   }
-  .thumbnails { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
-  .thumbnails img {
-    width: 60px; height: 60px; object-fit: cover;
-    border: 2px solid transparent; cursor: pointer;
-    background: #f0ece4;
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-  .thumbnails .active { border-color: var(--color-accent); }
 
-  /* Info */
-  .brand-name {
-    font-size: 0.75rem;
+  /* Story Side */
+  .atmosphere-quote {
+    font-family: var(--font-serif);
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--color-gold);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-gold);
+  }
+  .brand-heading {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
     color: var(--color-accent);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
     font-weight: 600;
     margin-bottom: 0.3rem;
   }
-  .product-title {
-    font-family: var(--font-serif);
-    font-size: 1.2rem;
+  .watch-title {
+    font-size: 1.3rem;
     font-weight: 400;
-    line-height: 1.5;
+    line-height: 1.6;
     margin-bottom: 1rem;
   }
-
-  .price-section { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
-  .current-price { font-size: 1.5rem; font-weight: 700; color: var(--color-accent); }
-  .original-price { font-size: 0.9rem; color: #aaa; text-decoration: line-through; }
-  .discount {
+  .price-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+  }
+  .price-current { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 700; color: var(--color-accent); }
+  .price-original { font-size: 0.85rem; color: #bbb; text-decoration: line-through; }
+  .price-discount {
     background: var(--color-accent); color: white;
-    padding: 1px 6px; font-size: 0.7rem; font-weight: 700;
+    padding: 2px 8px; font-size: 0.65rem; font-weight: 700;
   }
 
-  .payment-info { font-size: 0.8rem; color: #555; margin-bottom: 1.2rem; }
-
-  .action-buttons { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; }
-  .btn-add-cart, .btn-buy-now {
-    flex: 1; padding: 0.8rem 1rem; font-size: 0.85rem;
-    border: 1px solid var(--color-text); cursor: pointer;
-    font-family: var(--font-sans); transition: all 0.2s;
-  }
-  .btn-add-cart { background: white; color: var(--color-text); }
-  .btn-add-cart:hover { background: var(--color-border); }
-  .btn-buy-now { background: var(--color-text); color: white; }
-  .btn-buy-now:hover { opacity: 0.85; }
-
-  .promo-banner {
-    background: #f5f0e8; padding: 0.8rem;
-    font-size: 0.78rem; color: #555; line-height: 1.6;
+  .narrative p {
+    font-size: 0.82rem;
+    color: #555;
+    line-height: 2;
     margin-bottom: 1rem;
   }
+  .narrative-extended { font-style: italic; color: var(--color-muted) !important; font-size: 0.8rem !important; }
 
-  .features-list { margin-bottom: 1.5rem; }
-  .feature-item {
-    font-size: 0.8rem; color: #444;
-    padding: 0.3rem 0;
+  /* Specs */
+  .specs {
+    border-top: 1px solid var(--color-border);
+    padding-top: 1.2rem;
+    margin-top: 0.5rem;
   }
-
-  .description-section { border-top: 1px solid var(--color-border); padding-top: 1rem; }
-  .description-section h3 {
+  .specs h3 {
     font-family: var(--font-serif);
-    font-size: 0.9rem;
+    font-size: 0.78rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
   }
-  .description-section p { font-size: 0.8rem; color: #555; line-height: 1.8; }
-  .spec-item { font-size: 0.78rem; color: var(--color-muted); margin-top: 0.3rem; }
+  .specs-grid { display: grid; gap: 0.3rem; }
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+    border-bottom: 1px dashed rgba(229,221,208,0.5);
+  }
+  .spec-label { font-size: 0.72rem; color: var(--color-muted); }
+  .spec-value { font-size: 0.75rem; color: var(--color-text); font-weight: 400; }
 
   /* Related */
-  .related-section { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--color-border); }
-  .related-section h2 {
-    font-family: var(--font-serif);
-    font-size: 1.1rem;
-    font-weight: 400;
-    margin-bottom: 1.2rem;
+  .related-stories { 
+    max-width: 1100px; 
+    margin: 3rem auto 0; 
+    padding: 0 2rem;
   }
-  .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
-  .related-card { text-decoration: none; color: inherit; }
-  .related-img {
-    background: #f0ece4;
-    aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
+  .related-header { margin-bottom: var(--spacing-lg); }
+  .section-label {
+    font-size: 0.65rem; letter-spacing: 0.25em; color: var(--color-gold);
+    text-transform: uppercase; margin-bottom: 0.3rem; font-weight: 500;
   }
-  .related-img img { max-width: 85%; max-height: 85%; object-fit: contain; }
-  .related-info { padding: 0.5rem 0; }
-  .related-brand { font-size: 0.65rem; color: var(--color-accent); text-transform: uppercase; font-weight: 600; }
-  .related-name { font-size: 0.78rem; color: #444; line-height: 1.3; margin: 0.3rem 0; }
-  .related-price { font-size: 0.85rem; font-weight: 600; }
+  .related-header h2 { margin-bottom: 0; }
 
-  @media (max-width: 768px) {
-    .detail-main { grid-template-columns: 1fr; }
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .related-card {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.5s ease both;
+    animation-delay: calc(var(--i) * 0.07s);
+  }
+  .related-img {
+    aspect-ratio: 1;
+    background: #f5f0e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .related-img img {
+    max-width: 80%;
+    max-height: 80%;
+    object-fit: contain;
+    transition: transform 0.4s;
+  }
+  .related-card:hover .related-img img { transform: scale(1.08); }
+  .related-info { padding: 0.6rem 0; }
+  .related-brand { font-size: 0.6rem; letter-spacing: 0.1em; color: var(--color-gold); text-transform: uppercase; font-weight: 600; }
+  .related-info h4 { font-size: 0.78rem; font-weight: 400; line-height: 1.4; margin: 0.3rem 0; }
+  .related-price { font-family: var(--font-serif); font-size: 0.85rem; font-weight: 600; color: var(--color-accent); }
+
+  .back-cta {
+    text-align: center;
+    padding: var(--spacing-xl) 2rem;
+  }
+  .btn-outline {
+    display: inline-block;
+    border: 1px solid var(--color-text);
+    padding: 0.8rem 2rem;
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 0.78rem;
+    transition: all 0.3s;
+    font-family: var(--font-sans);
+    letter-spacing: 0.05em;
+  }
+  .btn-outline:hover { background: var(--color-text); color: white; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 800px) {
+    .story-detail { grid-template-columns: 1fr; gap: 1.5rem; }
+    .gallery-main { position: static; }
     .related-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .related-grid { grid-template-columns: 1fr; }
   }
 </style>
