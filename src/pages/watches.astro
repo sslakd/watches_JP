@@ -1,26 +1,239 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import products from '../data/products.json';
+
+// Group brands for the sidebar
+const brands = [...new Set(products.map(p => p.brand))].slice(0, 12);
+const categories = [...new Set(products.map(p => p.category))].slice(0, 8);
+const displayed = products.slice(0, 48);
 ---
-<BaseLayout title="腕時計" description="厳選された時計コレクション — それぞれに物語があります。">
-  <div class="hero">
-    <div class="subtitle">コレクション</div>
-    <h1>あなたの物語を<br>見つけてください</h1>
-    <p>職人技、伝統、そしてストーリー性を重視して選ばれた時計たち。</p>
-  </div>
+<BaseLayout title="腕時計コレクション" description="厳選された時計コレクション — ブランド、スタイル、価格帯からお探しいただけます。">
+  <div class="product-page">
+    <!-- Sidebar Filters -->
+    <aside class="filters">
+      <div class="filter-section">
+        <h4>ブランド</h4>
+        {brands.map(b => <label class="filter-label"><input type="checkbox" /> {b}</label>)}
+      </div>
+      <div class="filter-section">
+        <h4>カテゴリー</h4>
+        {categories.map(c => <label class="filter-label"><input type="checkbox" /> {c}</label>)}
+      </div>
+      <div class="filter-section">
+        <h4>価格帯</h4>
+        <label class="filter-label"><input type="radio" name="price" /> ~$100</label>
+        <label class="filter-label"><input type="radio" name="price" /> $100~$300</label>
+        <label class="filter-label"><input type="radio" name="price" /> $300~$500</label>
+        <label class="filter-label"><input type="radio" name="price" /> $500+</label>
+      </div>
+    </aside>
 
-  <div class="card-grid">
-    {products.slice(0, 50).map((product) => (
-      <a class="card" href={`/watches/${product.sku}`}>
-        <img src={product.image} alt={product.name} loading="lazy" />
-        <div class="maker">{product.brand}</div>
-        <h3>{product.name}</h3>
-        <div class="price">${product.price_usd.toLocaleString()}</div>
-      </a>
-    ))}
-  </div>
+    <!-- Main Content -->
+    <main class="products-main">
+      <div class="products-header">
+        <h1>腕時計コレクション</h1>
+        <span class="product-count">{products.length}点の商品</span>
+      </div>
 
-  <div style="text-align: center; padding: var(--spacing-lg) 0;">
-    <p style="color: var(--color-muted);">{products.length}点の時計を厳選 — 毎日新しい物語が追加されています。</p>
+      <div class="product-grid">
+        {displayed.map((product) => (
+          <a class="product-card" href={`/watches/${product.sku}`}>
+            <div class="product-image-wrapper">
+              <img src={product.image} alt={product.name} loading="lazy" />
+              {product.price_usd < 100 && <span class="badge-sale">SALE</span>}
+            </div>
+            <div class="product-info">
+              <div class="product-brand">{product.brand}</div>
+              <div class="product-name">{product.name.length > 55 ? product.name.slice(0, 55) + '…' : product.name}</div>
+              <div class="product-price-row">
+                <span class="product-price">${product.price_usd.toLocaleString()}</span>
+                <span class="product-original-price">${(product.price_usd * (1.2)).toFixed(0)}</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="pagination">
+        <span class="page-active">1</span>
+        <a href="#" class="page-link">2</a>
+        <a href="#" class="page-link">3</a>
+        <span class="page-dots">…</span>
+        <a href="#" class="page-link">次へ →</a>
+      </div>
+    </main>
   </div>
 </BaseLayout>
+
+<style>
+  .product-page {
+    display: flex;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+  }
+
+  /* Sidebar */
+  .filters {
+    width: 220px;
+    flex-shrink: 0;
+  }
+  .filter-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .filter-section h4 {
+    font-family: var(--font-serif);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.8rem;
+    color: var(--color-text);
+  }
+  .filter-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #555;
+    padding: 0.3rem 0;
+    cursor: pointer;
+  }
+  .filter-label:hover { color: var(--color-text); }
+  .filter-label input { accent-color: var(--color-accent); }
+
+  /* Main */
+  .products-main { flex: 1; min-width: 0; }
+
+  .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid var(--color-border);
+  }
+  .products-header h1 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin: 0;
+  }
+  .product-count {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+
+  /* Grid */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .product-card {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s;
+  }
+  .product-card:hover { transform: translateY(-3px); }
+
+  .product-image-wrapper {
+    position: relative;
+    background: #f0ece4;
+    aspect-ratio: 1;
+    overflow: hidden;
+  }
+  .product-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 0.5rem;
+    transition: transform 0.3s;
+  }
+  .product-card:hover .product-image-wrapper img { transform: scale(1.05); }
+
+  .badge-sale {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #c00;
+    color: white;
+    padding: 2px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+  }
+
+  .product-info { padding: 0.6rem 0; }
+
+  .product-brand {
+    font-size: 0.7rem;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+  }
+  .product-name {
+    font-size: 0.82rem;
+    line-height: 1.4;
+    color: #333;
+    margin-bottom: 0.4rem;
+    font-weight: 400;
+  }
+
+  .product-price-row { display: flex; align-items: center; gap: 0.5rem; }
+  .product-price {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+  .product-original-price {
+    font-size: 0.75rem;
+    color: #aaa;
+    text-decoration: line-through;
+  }
+
+  /* Pagination */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2rem 0 1rem;
+  }
+  .page-active {
+    background: var(--color-accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    border-radius: 3px;
+  }
+  .page-link {
+    color: var(--color-muted);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+  }
+  .page-link:hover { color: var(--color-text); }
+  .page-dots { color: var(--color-muted); font-size: 0.8rem; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .product-page { flex-direction: column; }
+    .filters { width: 100%; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .filter-section { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+    .product-grid { grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  }
+</style>

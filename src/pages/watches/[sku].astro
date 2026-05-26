@@ -10,30 +10,219 @@ export async function getStaticPaths() {
 }
 
 const { product } = Astro.props;
+const related = products.filter(p => p.brand === product.brand && p.sku !== product.sku).slice(0, 4);
+const features = [
+  `ブランド: ${product.brand}`,
+  `型番: ${product.mpn}`,
+  `カテゴリー: ${product.category}`,
+  `新品・正規品保証`,
+  `送料無料(日本国内)`,
+];
 ---
 <BaseLayout title={product.name} description={product.description}>
-  <div style="max-width: 900px; margin: 0 auto; padding: var(--spacing-lg) var(--spacing-md);">
-    <a href="/watches" style="color: var(--color-muted); text-decoration: none; font-size: 0.85rem;">&larr; コレクションに戻る</a>
-    
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg); margin-top: var(--spacing-lg);">
-      <div>
-        <img src={product.image} alt={product.name} style="width: 100%; aspect-ratio: 1; object-fit: cover; background: #e8e3dd;" />
-      </div>
-      <div>
-        <div style="font-size: 0.75rem; color: var(--color-accent); font-family: var(--font-serif); margin-bottom: 0.5rem;">{product.brand}</div>
-        <h1 style="font-size: 1.5rem; margin-bottom: 0.5rem;">{product.name}</h1>
-        <div style="font-family: var(--font-serif); font-size: 1.3rem; color: var(--color-accent); margin-bottom: var(--spacing-md);">${product.price_usd.toLocaleString()}</div>
-        
-        <div style="border-top: 1px solid var(--color-border); padding-top: var(--spacing-md);">
-          <p style="font-size: 0.85rem; color: #555; line-height: 1.8;">{product.description}</p>
+  <div class="detail-page">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="/">ホーム</a>
+      <span>/</span>
+      <a href="/watches">腕時計</a>
+      <span>/</span>
+      <span class="current">{product.brand}</span>
+    </nav>
+
+    <div class="detail-main">
+      <!-- Image Gallery -->
+      <div class="gallery-section">
+        <div class="main-image">
+          <img src={product.image} alt={product.name} />
         </div>
-        
-        <div style="margin-top: var(--spacing-md); font-size: 0.8rem; color: var(--color-muted);">
-          <p>SKU: {product.sku}</p>
-          <p>MPN: {product.mpn}</p>
-          <p>カテゴリー: {product.category}</p>
+        <div class="thumbnails">
+          <img src={product.image} alt="" class="active" />
+          <img src={product.image} alt="" />
+          <img src={product.image} alt="" />
+          <img src={product.image} alt="" />
+        </div>
+      </div>
+
+      <!-- Product Info -->
+      <div class="detail-info">
+        <div class="brand-name">{product.brand}</div>
+        <h1 class="product-title">{product.name}</h1>
+
+        <div class="price-section">
+          <div class="current-price">${product.price_usd.toLocaleString()}</div>
+          <div class="original-price">${(product.price_usd * 1.2).toFixed(0)}</div>
+          <span class="discount">-20%</span>
+        </div>
+
+        <div class="payment-info">
+          毎月の分割払い: <strong>${(product.price_usd / 12).toFixed(2)}/月</strong>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn-add-cart">カートに入れる</button>
+          <button class="btn-buy-now">今すぐ購入</button>
+        </div>
+
+        <div class="promo-banner">
+          🚚 5000円以上で送料無料<br />
+          30日以内返品可能
+        </div>
+
+        <!-- Features -->
+        <div class="features-list">
+          {features.map(f => <div class="feature-item">✓ {f}</div>)}
+        </div>
+
+        <!-- Description -->
+        <div class="description-section">
+          <h3>商品説明</h3>
+          <p>{product.description}</p>
+          <p class="spec-item"><strong>SKU:</strong> {product.sku}</p>
+          <p class="spec-item"><strong>MPN:</strong> {product.mpn}</p>
         </div>
       </div>
     </div>
+
+    <!-- Related Products -->
+    {related.length > 0 && (
+      <div class="related-section">
+        <h2>同じブランドの商品</h2>
+        <div class="related-grid">
+          {related.map(r => (
+            <a class="related-card" href={`/watches/${r.sku}`}>
+              <div class="related-img">
+                <img src={r.image} alt={r.name} loading="lazy" />
+              </div>
+              <div class="related-info">
+                <div class="related-brand">{r.brand}</div>
+                <div class="related-name">{r.name.length > 40 ? r.name.slice(0, 40) + '…' : r.name}</div>
+                <div class="related-price">${r.price_usd.toLocaleString()}</div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
   </div>
 </BaseLayout>
+
+<style>
+  .detail-page { max-width: 1100px; margin: 0 auto; padding: 1rem; }
+  .breadcrumb { font-size: 0.8rem; color: var(--color-muted); margin-bottom: 1.5rem; }
+  .breadcrumb a { color: var(--color-muted); text-decoration: none; }
+  .breadcrumb a:hover { color: var(--color-text); }
+  .breadcrumb span { margin: 0 0.5rem; }
+  .breadcrumb .current { color: var(--color-text); }
+
+  .detail-main { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; }
+
+  /* Gallery */
+  .gallery-section { }
+  .main-image {
+    background: #f8f6f2;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-border);
+  }
+  .main-image img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+  }
+  .thumbnails { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
+  .thumbnails img {
+    width: 60px; height: 60px; object-fit: cover;
+    border: 2px solid transparent; cursor: pointer;
+    background: #f0ece4;
+  }
+  .thumbnails .active { border-color: var(--color-accent); }
+
+  /* Info */
+  .brand-name {
+    font-size: 0.75rem;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+  }
+  .product-title {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .price-section { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+  .current-price { font-size: 1.5rem; font-weight: 700; color: var(--color-accent); }
+  .original-price { font-size: 0.9rem; color: #aaa; text-decoration: line-through; }
+  .discount {
+    background: var(--color-accent); color: white;
+    padding: 1px 6px; font-size: 0.7rem; font-weight: 700;
+  }
+
+  .payment-info { font-size: 0.8rem; color: #555; margin-bottom: 1.2rem; }
+
+  .action-buttons { display: flex; gap: 0.8rem; margin-bottom: 0.8rem; }
+  .btn-add-cart, .btn-buy-now {
+    flex: 1; padding: 0.8rem 1rem; font-size: 0.85rem;
+    border: 1px solid var(--color-text); cursor: pointer;
+    font-family: var(--font-sans); transition: all 0.2s;
+  }
+  .btn-add-cart { background: white; color: var(--color-text); }
+  .btn-add-cart:hover { background: var(--color-border); }
+  .btn-buy-now { background: var(--color-text); color: white; }
+  .btn-buy-now:hover { opacity: 0.85; }
+
+  .promo-banner {
+    background: #f5f0e8; padding: 0.8rem;
+    font-size: 0.78rem; color: #555; line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .features-list { margin-bottom: 1.5rem; }
+  .feature-item {
+    font-size: 0.8rem; color: #444;
+    padding: 0.3rem 0;
+  }
+
+  .description-section { border-top: 1px solid var(--color-border); padding-top: 1rem; }
+  .description-section h3 {
+    font-family: var(--font-serif);
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .description-section p { font-size: 0.8rem; color: #555; line-height: 1.8; }
+  .spec-item { font-size: 0.78rem; color: var(--color-muted); margin-top: 0.3rem; }
+
+  /* Related */
+  .related-section { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--color-border); }
+  .related-section h2 {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-bottom: 1.2rem;
+  }
+  .related-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+  .related-card { text-decoration: none; color: inherit; }
+  .related-img {
+    background: #f0ece4;
+    aspect-ratio: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .related-img img { max-width: 85%; max-height: 85%; object-fit: contain; }
+  .related-info { padding: 0.5rem 0; }
+  .related-brand { font-size: 0.65rem; color: var(--color-accent); text-transform: uppercase; font-weight: 600; }
+  .related-name { font-size: 0.78rem; color: #444; line-height: 1.3; margin: 0.3rem 0; }
+  .related-price { font-size: 0.85rem; font-weight: 600; }
+
+  @media (max-width: 768px) {
+    .detail-main { grid-template-columns: 1fr; }
+    .related-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
