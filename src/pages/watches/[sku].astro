@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import products from '../../data/products.json';
+import { translateProductName, translateCategory, translateDescription } from '../../data/i18n.js';
+import { toJPY } from '../../data/jpyRate.js';
 
 export async function getStaticPaths() {
   return products.map((product) => ({
@@ -23,7 +25,7 @@ const specLines = [
   { label: 'ブランド', value: product.brand },
   { label: '型番', value: product.mpn },
   { label: 'SKU', value: product.sku },
-  { label: 'カテゴリー', value: product.category },
+  { label: 'カテゴリー', value: translateCategory(product.category) },
 ];
 ---
 <BaseLayout title={`${product.brand} — "${product.name.slice(0, 50)}"`} description={product.description}>
@@ -40,7 +42,7 @@ const specLines = [
     <!-- Left: The Watch -->
     <div class="watch-gallery">
       <div class="gallery-main">
-        <img src={product.image} alt={product.name} />
+        <img src={product.image} alt={translateProductName(product.name)} />
       </div>
     </div>
 
@@ -50,17 +52,17 @@ const specLines = [
       <div class="atmosphere-quote">{randomQuote}</div>
 
       <div class="brand-heading">{product.brand}</div>
-      <h1 class="watch-title">{product.name.length > 70 ? product.name.slice(0, 70) + '…' : product.name}</h1>
+      <h1 class="watch-title">{translateProductName(product.name).length > 70 ? translateProductName(product.name).slice(0, 70) + '…' : translateProductName(product.name)}</h1>
 
       <div class="price-row">
-        <span class="price-current">${product.price_usd.toLocaleString()}</span>
-        <span class="price-original">${(product.price_usd * 1.2).toFixed(0)}</span>
+        <span class="price-current">¥{toJPY(product.price_usd)}</span>
+        <span class="price-original">¥{toJPY(product.price_usd * 1.2)}</span>
         <span class="price-discount">-20%</span>
       </div>
 
       <!-- The Narrative -->
       <div class="narrative">
-        <p>{product.description}</p>
+        <p>{translateDescription(product.description)}</p>
         <p class="narrative-extended">
           {product.brand}の技術と情熱が込められたこの一本。<br />
           日常の一瞬を特別に変える、そんな出会いをあなたに。
