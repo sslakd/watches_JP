@@ -1,14 +1,34 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
-<BaseLayout title="このサイトについて" description="時計物語の物語 — なぜ私たちは時計にストーリーがあると信じているのか。">
-  <div class="hero">
-    <div class="subtitle">私たちの物語</div>
-    <h1>なぜ時計物語なのか？</h1>
-    <p>時計は決して「ただの時計」ではありません。自分への初めての贈り物。祖父から受け継いだ宝物。人生の節目を刻む証。私たちは、すべての時計に物語があると信じています。</p>
-  </div>
-  <div style="max-width: 650px; margin: 0 auto; padding: var(--spacing-lg) 0; color: #555; line-height: 2.4;">
-    <p>セイコー、シチズン、カシオ、オリエント — 世界で最も信頼されるブランドの時計たち。高価だからではなく、最も語るべきものを持っているからです。</p>
-    <p style="margin-top: 1.5rem; font-style: italic; color: var(--color-accent);">— 時計物語チーム</p>
-  </div>
+
+<BaseLayout title="このサイトについて" description="時計物語はCreationWatchesへの送客を目的にした編集型アフィリエイトサイトです。">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">このサイトについて</p>
+      <h1>時計物語は、時計店ではありません。</h1>
+      <p>時計の背景、選び方、価格帯を編集記事として整理し、購入を検討する読者をCreationWatchesへ案内するサイトです。</p>
+    </div>
+  </section>
+
+  <section class="about-body">
+    <div class="container about-grid">
+      <div>
+        <p class="eyebrow">方針</p>
+        <h2>購入クリックの前に、読む理由を作る。</h2>
+      </div>
+      <div class="about-copy">
+        <p>読者は、いきなり商品ページに行く前に「どの時計が自分に合うのか」を知りたいものです。</p>
+        <p>時計物語では、ブランドの背景、使う場面、価格帯、モデルの魅力を物語として伝えます。</p>
+        <p>アフィリエイト開示: 当サイトのCreationWatchesリンクから購入が行われた場合、当サイトが手数料を受け取ることがあります。読者の購入価格が上がることはありません。</p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .about-body { padding: var(--spacing-xl) 0 var(--spacing-2xl); }
+  .about-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 4rem; align-items: start; }
+  .about-copy { display: grid; gap: 1.25rem; color: var(--color-subtle); font-size: 1rem; line-height: 2; }
+  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 2rem; } }
+</style>

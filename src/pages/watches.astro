@@ -2,159 +2,108 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import products from '../data/products.json';
 import { translateProductName } from '../data/i18n.js';
-import { JPY_RATE, toJPY } from '../data/jpyRate.js';
+import { toJPY } from '../data/jpyRate.js';
 
-const brands = [...new Set(products.map(p => p.brand))].sort();
-const groups = [
-  { label: '高級 — ¥300,000以上', watches: products.filter(p => p.price_usd >= 3000).slice(0, 4) },
-  { label: 'ミッドレンジ — ¥30,000〜¥300,000', watches: products.filter(p => p.price_usd >= 300 && p.price_usd < 3000).slice(0, 4) },
-  { label: 'エントリー — ¥30,000以下', watches: products.filter(p => p.price_usd < 300).slice(0, 8) },
-].filter(g => g.watches.length > 0);
-
-// Pre-process: add Japanese name and price to each product
-const grouped = groups.map(group => ({
+const visibleProducts = products.slice(0, 48).map((p) => ({ ...p, jpName: translateProductName(p.name), jpy: toJPY(p.price_usd) }));
+const priceGroups = [
+  { label: '3万円以下', intent: 'はじめての一本', watches: products.filter((p) => p.price_usd > 0 && p.price_usd < 300).slice(0, 4) },
+  { label: '3万円から30万円', intent: '価値を重視', watches: products.filter((p) => p.price_usd >= 300 && p.price_usd < 3000).slice(0, 4) },
+  { label: '30万円以上', intent: '記念品・コレクション', watches: products.filter((p) => p.price_usd >= 3000).slice(0, 4) },
+].filter((group) => group.watches.length > 0).map((group) => ({
   ...group,
-  items: group.watches.map(p => ({
-    ...p,
-    jpName: translateProductName(p.name),
-    jpy: toJPY(p.price_usd),
-  }))
-}));
-
-const allItems = products.slice(0, 48).map(p => ({
-  ...p,
-  jpName: translateProductName(p.name),
-  jpy: toJPY(p.price_usd),
+  watches: group.watches.map((p) => ({ ...p, jpName: translateProductName(p.name), jpy: toJPY(p.price_usd) })),
 }));
 ---
-<BaseLayout title="腕時計" description="厳選された時計たちの物語。日本が誇るセイコー、シチズン、カシオ、オリエントの時計を、価格帯とストーリーでお届けします。">
-  <!-- Hero -->
-  <section class="listing-hero">
-    <div class="listing-hero-inner">
-      <div class="hero-kicker">— 時計物語コレクション —</div>
-      <h1>{products.length}本の時計<br>それぞれに物語がある</h1>
-      <p>機械式の温もり、クォーツの正確さ、ソーラーの革新。<br>
-      一本一本に、作り手の想いと持ち主のストーリーが刻まれています。</p>
+
+<BaseLayout title="時計購入ガイド" description="時計の物語と購入判断をつなぐCreationWatches向けアフィリエイトガイド。">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Buying Guide Hub</p>
+      <h1>{products.length}本の時計を、購入意図で整理。</h1>
+      <p>価格帯、ブランド、用途から時計を理解し、気になるモデルはCreationWatchesで現在価格を確認できます。</p>
     </div>
   </section>
 
-  <!-- By Price Group -->
-  {grouped.map((group, gi) => (
-    <section class={`price-band ${gi % 2 === 0 ? 'band-light' : 'band-dark'}`}>
-      <div class="band-header">
-        <div class="band-number">{String(gi + 1).padStart(2, '0')}</div>
-        <div>
-          <h2>{group.label}</h2>
-          <p class="band-sub">{group.items.length}本の時計</p>
-        </div>
+  <section class="price-groups">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">検索意図</p><h2>価格帯から読む</h2></div>
       </div>
-      <div class="band-grid">
-        {group.items.map((p, i) => (
-          <a href={`/watches/${p.sku}`} class="band-card" style={`--i: ${i}`}>
-            <div class="band-card-img">
-              <img src={p.image} alt={p.jpName} loading="lazy" />
+      <div class="group-grid">
+        {priceGroups.map((group) => (
+          <section class="group-panel">
+            <div class="group-header"><span>{group.intent}</span><h3>{group.label}</h3></div>
+            <div class="mini-list">
+              {group.watches.map((watch) => (
+                <a href={watch.url || '#'} class="mini-card" target="_blank" rel="noopener noreferrer">
+                  <img src={watch.image} alt={watch.jpName} loading="lazy" />
+                  <div>
+                    <span>{watch.brand}</span>
+                    <strong>{watch.jpName}</strong>
+                    <em>¥{watch.jpy}</em>
+                    <small>CreationWatchesで価格を確認</small>
+                  </div>
+                </a>
+              ))}
             </div>
-            <div class="band-card-info">
-              <div class="band-brand">{p.brand}</div>
-              <h3>{p.jpName.length > 50 ? p.jpName.slice(0, 50) + '…' : p.jpName}</h3>
-              <div class="band-card-footer">
-                <span class="band-price">¥{p.jpy}</span>
-                <span class="band-link">詳細を見る →</span>
-              </div>
+          </section>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="all-watches">
+    <div class="container">
+      <div class="section-heading">
+        <div><p class="eyebrow">Affiliate Feed</p><h2>すべての購入ガイド</h2></div>
+        <span class="count">{visibleProducts.length}本を表示</span>
+      </div>
+      <div class="watch-grid">
+        {visibleProducts.map((watch) => (
+          <a href={watch.url || '#'} class="watch-card" target="_blank" rel="noopener noreferrer">
+            <div class="watch-image">
+              {watch.price_usd > 0 && watch.price_usd < 300 && <span class="badge">Value</span>}
+              <img src={watch.image} alt={watch.jpName} loading="lazy" />
+            </div>
+            <div class="watch-info">
+              <span>{watch.brand}</span>
+              <h3>{watch.jpName}</h3>
+              <strong>¥{watch.jpy}</strong>
+              <small>CreationWatchesで価格を確認</small>
             </div>
           </a>
         ))}
       </div>
-    </section>
-  ))}
-
-  <!-- All Watches -->
-  <section class="all-watches">
-    <div class="all-header">
-      <div class="section-label">コレクション</div>
-      <h2>すべての時計</h2>
-      <div class="all-controls">
-        <select class="sort-select">
-          <option>おすすめ順</option>
-          <option>価格の安い順</option>
-          <option>価格の高い順</option>
-          <option>ブランド順</option>
-        </select>
-        <span class="all-count">{allItems.length}本</span>
-      </div>
-    </div>
-    <div class="all-grid">
-      {allItems.map((p, i) => (
-        <a href={`/watches/${p.sku}`} class="all-card" style={`--delay: ${(i % 12) * 0.04}s`}>
-          <div class="all-img">
-            <img src={p.image} alt={p.jpName} loading="lazy" />
-            {p.price_usd < 50 && <span class="badge-spotlight">お手頃</span>}
-          </div>
-          <div class="all-info">
-            <div class="all-brand">{p.brand}</div>
-            <h4>{p.jpName.length > 45 ? p.jpName.slice(0, 45) + '…' : p.jpName}</h4>
-            <span class="all-price">¥{p.jpy}</span>
-          </div>
-        </a>
-      ))}
-    </div>
-    <div class="pagination">
-      <span class="page-current">1</span>
-      <a href="#" class="page-link">2</a>
-      <a href="#" class="page-link">3</a>
-      <a href="#" class="page-link">次へ →</a>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .listing-hero { padding: 8rem 2rem 4rem; background: linear-gradient(to bottom, #f0ece4, var(--color-bg)); text-align: center; }
-  .listing-hero-inner { max-width: 700px; margin: 0 auto; }
-  .listing-hero .hero-kicker { font-size: 0.65rem; letter-spacing: 0.25em; color: var(--color-gold); text-transform: uppercase; margin-bottom: 1rem; font-weight: 500; }
-  .listing-hero h1 { margin-bottom: 1rem; }
-  .listing-hero p { font-size: 0.85rem; color: var(--color-muted); line-height: 2; }
-  .price-band { padding: var(--spacing-xl) 2rem; }
-  .band-light { background: white; }
-  .band-dark { background: var(--color-bg); }
-  .band-header { display: flex; align-items: center; gap: 1.5rem; max-width: 1200px; margin: 0 auto var(--spacing-lg); }
-  .band-number { font-family: var(--font-serif); font-size: 2.5rem; color: var(--color-gold); opacity: 0.25; line-height: 1; }
-  .band-header h2 { margin-bottom: 0.2rem; }
-  .band-sub { font-size: 0.75rem; color: var(--color-muted); }
-  .band-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; max-width: 1200px; margin: 0 auto; }
-  .band-card { text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: all 0.3s; animation: fadeIn 0.5s ease both; animation-delay: calc(var(--i) * 0.08s); }
-  .band-card:hover { transform: translateY(-4px); }
-  .band-card-img { aspect-ratio: 1; background: #f5f0e8; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .band-card-img img { max-width: 80%; max-height: 80%; object-fit: contain; transition: transform 0.5s; }
-  .band-card:hover .band-card-img img { transform: scale(1.1); }
-  .band-card-info { padding: 0.8rem 0; }
-  .band-brand { font-size: 0.6rem; letter-spacing: 0.1em; color: var(--color-gold); text-transform: uppercase; font-weight: 600; margin-bottom: 0.2rem; }
-  .band-card-info h3 { font-size: 0.82rem; font-weight: 400; line-height: 1.5; margin-bottom: 0.5rem; font-family: var(--font-sans); }
-  .band-card-footer { display: flex; justify-content: space-between; align-items: center; }
-  .band-price { font-family: var(--font-serif); font-size: 0.95rem; font-weight: 600; color: var(--color-accent); }
-  .band-link { font-size: 0.7rem; color: var(--color-muted); transition: color 0.3s; }
-  .band-card:hover .band-link { color: var(--color-accent); }
-  .all-watches { padding: var(--spacing-xl) 2rem var(--spacing-2xl); }
-  .all-header { max-width: 1200px; margin: 0 auto var(--spacing-lg); display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; }
-  .all-header .section-label { font-size: 0.65rem; letter-spacing: 0.25em; color: var(--color-gold); text-transform: uppercase; font-weight: 500; }
-  .all-header h2 { margin-bottom: 0; }
-  .all-controls { display: flex; align-items: center; gap: 1rem; }
-  .sort-select { padding: 0.4rem 0.8rem; border: 1px solid var(--color-border); background: white; font-size: 0.78rem; font-family: var(--font-sans); color: var(--color-text); cursor: pointer; }
-  .all-count { font-size: 0.78rem; color: var(--color-muted); }
-  .all-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--color-border); max-width: 1200px; margin: 0 auto; }
-  .all-card { text-decoration: none; color: inherit; background: white; display: flex; flex-direction: column; animation: fadeIn 0.4s ease both; animation-delay: var(--delay, 0s); }
-  .all-img { position: relative; aspect-ratio: 1; background: #f5f0e8; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-  .all-img img { max-width: 80%; max-height: 80%; object-fit: contain; transition: transform 0.4s; }
-  .all-card:hover .all-img img { transform: scale(1.08); }
-  .badge-spotlight { position: absolute; top: 6px; left: 6px; background: var(--color-text); color: white; padding: 2px 8px; font-size: 0.6rem; font-weight: 600; letter-spacing: 0.05em; }
-  .all-info { padding: 0.6rem 0.8rem 0.8rem; }
-  .all-brand { font-size: 0.55rem; letter-spacing: 0.1em; color: var(--color-gold); text-transform: uppercase; font-weight: 600; }
-  .all-info h4 { font-size: 0.75rem; font-weight: 400; line-height: 1.4; margin: 0.3rem 0; font-family: var(--font-sans); }
-  .all-price { font-family: var(--font-serif); font-size: 0.85rem; font-weight: 600; color: var(--color-accent); }
-  .pagination { display: flex; justify-content: center; align-items: center; gap: 0.3rem; padding: 2rem 0 0; }
-  .page-current { background: var(--color-text); color: white; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; }
-  .page-link { color: var(--color-muted); text-decoration: none; font-size: 0.78rem; padding: 0.3rem 0.6rem; }
-  .page-link:hover { color: var(--color-text); }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-  @media (max-width: 1000px) { .band-grid { grid-template-columns: repeat(2, 1fr); } .all-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 600px) { .band-grid { grid-template-columns: 1fr; } .all-grid { grid-template-columns: repeat(2, 1fr); } }
+  .price-groups { padding: var(--spacing-xl) 0; background: var(--color-surface); }
+  .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 2rem; }
+  .count { color: var(--color-muted); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); }
+  .group-panel, .watch-card { background: var(--color-surface); }
+  .group-header { padding: 1.25rem; border-bottom: 1px solid var(--color-border); }
+  .group-header span, .mini-card span, .watch-info span { color: var(--color-gold); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .group-header h3 { margin-top: 0.35rem; }
+  .mini-list { display: grid; }
+  .mini-card { display: grid; grid-template-columns: 74px 1fr; gap: 0.9rem; min-width: 0; padding: 1rem 1.25rem; color: inherit; text-decoration: none; border-bottom: 1px solid var(--color-border); }
+  .mini-card img { width: 74px; height: 74px; object-fit: contain; background: var(--color-soft); }
+  .mini-card div { min-width: 0; display: grid; gap: 0.2rem; align-content: center; }
+  .mini-card strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.84rem; font-weight: 400; }
+  .mini-card em { color: var(--color-accent); font-family: var(--font-serif); font-size: 0.96rem; font-style: normal; }
+  .mini-card small, .watch-info small { color: var(--color-muted); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .all-watches { padding: var(--spacing-xl) 0 var(--spacing-2xl); }
+  .watch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); }
+  .watch-card { display: flex; flex-direction: column; min-width: 0; color: inherit; text-decoration: none; }
+  .watch-image { position: relative; display: grid; place-items: center; aspect-ratio: 1; padding: 1rem; background: #f7f3ed; }
+  .watch-image img { width: 100%; height: 100%; object-fit: contain; }
+  .badge { position: absolute; top: 0.7rem; left: 0.7rem; background: var(--color-text); color: white; padding: 0.25rem 0.45rem; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  .watch-info { display: grid; gap: 0.35rem; padding: 1rem; }
+  .watch-info h3 { display: -webkit-box; min-height: 3.4em; overflow: hidden; font-family: var(--font-sans); font-size: 0.86rem; font-weight: 400; line-height: 1.7; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .watch-info strong { color: var(--color-accent); font-family: var(--font-serif); font-size: 1rem; }
+  @media (max-width: 1040px) { .group-grid { grid-template-columns: 1fr; } .watch-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 720px) { .section-heading { align-items: start; flex-direction: column; } .watch-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .watch-grid { grid-template-columns: 1fr; } }
 </style>
