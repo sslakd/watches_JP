@@ -1,119 +1,193 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import products from '../data/products.json';
-import { translateProductName } from '../data/i18n.js';
-import { toJPY } from '../data/jpyRate.js';
 
-const featured = products.slice(0, 8).map((p) => ({ ...p, jpName: translateProductName(p.name), jpy: toJPY(p.price_usd) }));
-const storyWatch = featured[5] || featured[0];
 const brands = [...new Set(products.map((p) => p.brand).filter(Boolean))].slice(0, 8);
+const stories = [
+  {
+    kicker: '光をまとう',
+    title: 'シチズン エコ・ドライブ',
+    copy: '光を動力へ変える技術。その静かな革新が、日常の時間を支え続けます。',
+    href: '/monogatari/citizen-eco-drive.html',
+    image: 'https://cdnstatic.creationwatches.com/products/product-images/l/CA4560-81E_LRG.webp',
+    alt: 'シチズン エコ・ドライブ CA4560-81E',
+  },
+  {
+    kicker: '日本製の矜持',
+    title: 'オリエントスター',
+    copy: '見えない部分にこそ手をかける。日本の時計づくりが宿す、誠実さの物語。',
+    href: '/monogatari/orient-star-power-reserve.html',
+    image: 'https://cdnstatic.creationwatches.com/products/product-images/l/RE-AU0001S00B_LRG.webp',
+    alt: 'オリエントスター パワーリザーブ',
+  },
+  {
+    kicker: '陸のための設計',
+    title: 'セイコー プロスペックス',
+    copy: '方角を読み、環境に応える。道具として生まれた時計が、旅の記憶になるまで。',
+    href: '/monogatari/seiko-srpd31j1.html',
+    image: 'https://cdnstatic.creationwatches.com/products/product-images/l/SRPD31J1_LRG.webp',
+    alt: 'セイコー プロスペックス SRPD31J1',
+  },
+];
 ---
 
-<BaseLayout title="時計物語" description="時計の物語、購入ガイド、CreationWatchesの価格リンクをまとめた編集型アフィリエイトサイト。">
-  <section class="home-hero">
-    <div class="container hero-grid">
-      <div class="hero-copy">
-        <p class="eyebrow">Editorial Affiliate Guides</p>
-        <h1>時計を売る前に、選ぶ理由を語る。</h1>
-        <p>
-          時計物語は、モデルの背景、使う場面、価格帯、ブランドの魅力を物語として整理し、
-          購入意欲の高い読者をCreationWatchesの価格確認へ案内します。
-        </p>
-        <div class="hero-actions">
-          <a href="/watches" class="btn btn-primary">購入ガイドを読む</a>
-          <a href="/monogatari/citizen-eco-drive.html" class="btn">物語を読む</a>
-        </div>
-      </div>
+<BaseLayout title="時計物語" description="時計の背景、技術、佇まいを物語として届ける日本の時計メディア。">
+  <section class="journey-hero">
+    <div class="hero-watch" aria-hidden="true"></div>
+    <div class="hero-shade"></div>
+    <div class="container hero-content">
+      <p class="hero-kicker">時計と出会う、もうひとつの方法</p>
+      <h1>もしかすると、心に残る物語が、次の一本を選ぶ。</h1>
+      <p class="hero-intro">技術、背景、つくり手の思想。時計が刻んできた時間を知ってから、自分の時間へ迎える。</p>
+      <a href="/monogatari/citizen-eco-drive.html" class="light-link">物語を読む <span>→</span></a>
+    </div>
+    <a href="#philosophy" class="hero-next">物語のはじまり <span>↓</span></a>
+  </section>
 
-      {storyWatch && (
-        <a href={storyWatch.url || '/watches'} class="hero-watch" target="_blank" rel="noopener noreferrer">
-          <span>Story Spotlight</span>
-          <img src={storyWatch.image} alt={storyWatch.jpName} />
-          <strong>{storyWatch.jpName}</strong>
-          <em>¥{storyWatch.jpy}</em>
-          <small>CreationWatchesで価格を確認</small>
+  <section class="philosophy" id="philosophy">
+    <div class="container philosophy-inner">
+      <p class="section-kicker">時計物語の考え方</p>
+      <h2>見る。知る。自分の時間を重ねる。</h2>
+      <p>時計選びは、数字だけの比較ではありません。最初にその姿と出会い、背景にある物語を知り、最後に自分の暮らしへ置いてみる。時計物語は、その静かな順序を大切にします。</p>
+      <div class="journey-steps">
+        <span>一 — 出会う</span>
+        <span>二 — 読む</span>
+        <span>三 — 選ぶ</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="stories" id="stories">
+    <header class="container stories-heading">
+      <p class="section-kicker">選ばれた物語</p>
+      <h2>時間の向こうに、景色がある時計。</h2>
+    </header>
+
+    {stories.map((story, index) => (
+      <article class:list={['story-chapter', { reverse: index % 2 === 1 }]}>
+        <a href={story.href} class="chapter-image">
+          <img src={story.image} alt={story.alt} loading={index === 0 ? 'eager' : 'lazy'} />
         </a>
-      )}
-    </div>
-  </section>
-
-  <section class="beliefs">
-    <div class="container beliefs-grid">
-      <div>
-        <p class="eyebrow">StoreではなくFunnel</p>
-        <h2>検索流入を、自然な購入クリックへ。</h2>
-      </div>
-      <div class="belief-list">
-        <article><span>01</span><h3>物語</h3><p>時計の背景を語り、読者がそのモデルを理解できる入口を作ります。</p></article>
-        <article><span>02</span><h3>選び方</h3><p>価格、用途、ブランド、デザインを整理し、購入前の迷いを減らします。</p></article>
-        <article><span>03</span><h3>価格確認</h3><p>購入意欲が高まったタイミングでCreationWatchesへ送客します。</p></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="featured">
-    <div class="container">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">購入ガイド</p>
-          <h2>読まれる時計、クリックされる時計</h2>
+        <div class="chapter-copy">
+          <p class="section-kicker">{story.kicker}</p>
+          <h3>{story.title}</h3>
+          <p>{story.copy}</p>
+          <a href={story.href} class="ink-link">物語を読む <span>→</span></a>
         </div>
-        <a href="/watches" class="text-link">全{products.length}本を見る</a>
+      </article>
+    ))}
+  </section>
+
+  <section class="promise">
+    <div class="container promise-grid">
+      <div>
+        <p class="section-kicker">物語から選ぶ理由</p>
+        <h2>細部に宿るものを、丁寧に。</h2>
       </div>
-      <div class="product-grid">
-        {featured.map((product) => (
-          <a href={product.url || '/watches'} class="product-card" target="_blank" rel="noopener noreferrer">
-            <div class="product-image"><img src={product.image} alt={product.jpName} loading="lazy" /></div>
-            <div class="product-info">
-              <span>{product.brand}</span>
-              <h3>{product.jpName}</h3>
-              <strong>¥{product.jpy}</strong>
-              <small>CreationWatchesで価格を確認</small>
-            </div>
-          </a>
-        ))}
+      <div class="promise-list">
+        <div><span>背景</span><p>ブランド、土地、時代が時計へ残したもの。</p></div>
+        <div><span>佇まい</span><p>仕様表だけでは伝わらない、身につけたときの気配。</p></div>
+        <div><span>選択</span><p>物語を読んだあとにだけ、現在の価格へ案内します。</p></div>
       </div>
     </div>
   </section>
 
-  <section class="brand-strip">
+  <section class="brands">
     <div class="container">
-      <p class="eyebrow">ブランド</p>
-      <div class="brand-list">{brands.map((brand) => <span>{brand}</span>)}</div>
+      <p class="section-kicker">ブランドを越えて</p>
+      <div class="brand-line">{brands.map((brand) => <span>{brand}</span>)}</div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <div class="container closing-inner">
+      <p class="section-kicker">次の物語へ</p>
+      <h2>次の一本は、ひとつの物語から始まるかもしれません。</h2>
+      <a href="/watches" class="light-link">時計を探す <span>→</span></a>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .home-hero { padding: 6rem 0; background: linear-gradient(180deg, var(--color-soft), var(--color-bg)); }
-  .hero-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.75fr); gap: 4rem; align-items: center; }
-  .hero-copy p:not(.eyebrow) { max-width: 640px; margin-top: 1.25rem; color: var(--color-muted); font-size: 1rem; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
-  .hero-watch { display: grid; gap: 0.55rem; min-height: 520px; padding: 2rem; color: inherit; text-decoration: none; background: var(--color-surface); border: 1px solid var(--color-border); }
-  .hero-watch span, .product-info span { color: var(--color-gold); font-size: 0.66rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; }
-  .hero-watch img { width: 100%; height: 320px; object-fit: contain; align-self: center; }
-  .hero-watch strong { font-family: var(--font-serif); font-size: 1.08rem; font-weight: 400; line-height: 1.6; }
-  .hero-watch em { color: var(--color-accent); font-family: var(--font-serif); font-size: 1.1rem; font-style: normal; }
-  .hero-watch small, .product-info small { color: var(--color-muted); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
-  .beliefs { padding: var(--spacing-xl) 0; background: var(--color-surface); }
-  .beliefs-grid { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 4rem; align-items: start; }
-  .belief-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--color-border); }
-  .belief-list article { min-height: 230px; padding: 1.5rem; background: var(--color-surface); }
-  .belief-list span { display: block; margin-bottom: 2.5rem; color: var(--color-gold); font-family: var(--font-serif); font-size: 2rem; opacity: 0.45; }
-  .belief-list p { margin-top: 0.75rem; color: var(--color-muted); font-size: 0.9rem; }
-  .featured { padding: var(--spacing-xl) 0; }
-  .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 2rem; }
-  .text-link { color: var(--color-accent); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em; text-decoration: none; text-transform: uppercase; }
-  .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); }
-  .product-card { display: flex; flex-direction: column; min-width: 0; color: inherit; text-decoration: none; background: var(--color-surface); }
-  .product-image { display: grid; place-items: center; aspect-ratio: 1; padding: 1rem; background: #f7f3ed; }
-  .product-image img { width: 100%; height: 100%; object-fit: contain; }
-  .product-info { display: grid; gap: 0.35rem; padding: 1rem; }
-  .product-info h3 { display: -webkit-box; min-height: 3.4em; overflow: hidden; font-family: var(--font-sans); font-size: 0.86rem; font-weight: 400; line-height: 1.7; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .product-info strong { color: var(--color-accent); font-family: var(--font-serif); font-size: 1rem; }
-  .brand-strip { padding: 4rem 0; background: var(--color-surface); border-block: 1px solid var(--color-border); }
-  .brand-list { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
-  .brand-list span { border: 1px solid var(--color-border); padding: 0.55rem 0.85rem; background: var(--color-bg); color: var(--color-subtle); font-size: 0.85rem; }
-  @media (max-width: 980px) { .hero-grid, .beliefs-grid { grid-template-columns: 1fr; } .product-grid { grid-template-columns: repeat(2, 1fr); } .belief-list { grid-template-columns: 1fr; } }
-  @media (max-width: 560px) { .home-hero { padding: 4rem 0; } .hero-watch { padding: 1rem; } .product-grid { grid-template-columns: 1fr; } .section-heading { flex-direction: column; align-items: start; } }
+  .container { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; }
+  .journey-hero {
+    position: relative;
+    min-height: min(860px, calc(100vh - 72px));
+    overflow: hidden;
+    display: flex;
+    align-items: end;
+    color: #fff;
+    background: #293a36;
+  }
+  .hero-watch {
+    position: absolute;
+    inset: 0;
+    background:
+      url("https://cdnstatic.creationwatches.com/products/product-images/l/CA4560-81E_LRG.webp")
+      right 9% center / min(53vw, 670px) auto no-repeat,
+      linear-gradient(105deg, #253632 0%, #3e534d 55%, #d9ded8 55%, #f1f2ef 100%);
+    transform: scale(1.01);
+  }
+  .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(9,20,17,.58), transparent 72%); }
+  .hero-content { position: relative; z-index: 1; padding-bottom: 4.5rem; }
+  .hero-content h1 { max-width: 800px; font-size: 4rem; line-height: 1.2; }
+  .hero-kicker, .section-kicker { margin: 0 0 1.4rem; font-size: .68rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; }
+  .hero-intro { max-width: 590px; margin-top: 1.8rem; font-size: 1rem; line-height: 2; }
+  .light-link, .ink-link {
+    display: inline-flex;
+    gap: 1.2rem;
+    align-items: center;
+    margin-top: 2rem;
+    padding-bottom: .45rem;
+    border-bottom: 1px solid currentColor;
+    text-decoration: none;
+    font-size: .74rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    color: inherit;
+  }
+  .hero-next { position: absolute; z-index: 2; left: 50%; bottom: 2.2rem; display: flex; gap: 1rem; color: #fff; font-size: .68rem; letter-spacing: .14em; text-decoration: none; transform: translateX(-50%); }
+  .philosophy { padding: clamp(7rem, 13vw, 12rem) 0; text-align: center; background: #f5f1e9; }
+  .philosophy-inner { max-width: 900px; }
+  .philosophy h2, .stories-heading h2, .promise h2, .closing h2 { font-size: 3.8rem; line-height: 1.35; }
+  .philosophy-inner > p:not(.section-kicker) { max-width: 700px; margin: 2rem auto 0; color: var(--color-subtle); font-size: 1rem; line-height: 2.1; }
+  .journey-steps { display: flex; justify-content: center; gap: 3rem; margin-top: 3.5rem; color: var(--color-gold); font-size: .72rem; font-weight: 700; letter-spacing: .12em; }
+  .stories { padding: 8rem 0 0; background: #fff; }
+  .stories-heading { margin-bottom: 5rem; text-align: center; }
+  .story-chapter { display: grid; grid-template-columns: 58% 42%; min-height: 650px; }
+  .story-chapter.reverse { grid-template-columns: 42% 58%; }
+  .story-chapter.reverse .chapter-image { order: 2; }
+  .chapter-image { overflow: hidden; display: grid; place-items: center; background: #edf0ec; }
+  .chapter-image img { width: 70%; height: 70%; object-fit: contain; transition: transform .7s ease; }
+  .chapter-image:hover img { transform: scale(1.05); }
+  .chapter-copy { display: flex; flex-direction: column; justify-content: center; padding: clamp(3rem, 7vw, 8rem); background: #e6dfd3; }
+  .story-chapter.reverse .chapter-copy { background: #293a36; color: #fff; }
+  .chapter-copy h3 { max-width: 600px; font-size: 3.5rem; line-height: 1.3; }
+  .chapter-copy > p:not(.section-kicker) { max-width: 480px; margin-top: 1.5rem; font-size: .96rem; line-height: 2; }
+  .promise { padding: clamp(7rem, 11vw, 10rem) 0; background: #f5f1e9; }
+  .promise-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 7rem; }
+  .promise-list { border-top: 1px solid #cec5b6; }
+  .promise-list div { display: grid; grid-template-columns: 110px 1fr; gap: 2rem; padding: 1.5rem 0; border-bottom: 1px solid #cec5b6; }
+  .promise-list span { font-family: var(--font-serif); font-size: 1.2rem; }
+  .promise-list p { color: var(--color-muted); }
+  .brands { padding: 4rem 0; background: #fff; text-align: center; }
+  .brand-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.4rem 3rem; color: #57534d; font-family: var(--font-serif); font-size: 1.1rem; }
+  .closing { min-height: 620px; display: grid; place-items: center; color: #fff; text-align: center; background: #293a36; }
+  .closing-inner { max-width: 900px; }
+  @media (max-width: 800px) {
+    .journey-hero { min-height: 780px; }
+    .hero-watch { background-position: center 16%; background-size: 330px auto, cover; }
+    .hero-shade { background: linear-gradient(0deg, rgba(12,24,21,.9) 0%, rgba(12,24,21,.08) 72%); }
+    .hero-content { padding-bottom: 7rem; }
+    .hero-content h1 { font-size: 3rem; }
+    .philosophy h2, .stories-heading h2, .promise h2, .closing h2 { font-size: 2.5rem; }
+    .chapter-copy h3 { font-size: 2.5rem; }
+    .journey-steps { gap: 1rem; flex-wrap: wrap; }
+    .story-chapter, .story-chapter.reverse { grid-template-columns: 1fr; min-height: 0; }
+    .story-chapter.reverse .chapter-image { order: 0; }
+    .chapter-image { min-height: 430px; }
+    .chapter-copy { min-height: 440px; padding: 3rem 1.5rem; }
+    .promise-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .promise-list div { grid-template-columns: 1fr; gap: .4rem; }
+  }
 </style>
