@@ -12,6 +12,7 @@ export async function getStaticPaths() {
 }
 
 const { product } = Astro.props;
+const creationWatchesUrl = `https://www.creationwatches.com/products/ja/search?keyword=${encodeURIComponent(product.sku)}`;
 const sameBrand = products.filter(p => p.brand === product.brand && p.sku !== product.sku).slice(0, 6);
 const samePrice = products.filter(p => Math.abs(p.price_usd - product.price_usd) < 50 && p.sku !== product.sku).slice(0, 3);
 const relatedAll = [...sameBrand, ...samePrice].slice(0, 6).map(r => ({
@@ -88,7 +89,7 @@ const specLines = [
       </div>
 
       <div class="action-buttons">
-        <a class="btn-buy-now" href={product.url || '#'} target="_blank" rel="sponsored nofollow noopener noreferrer">
+        <a class="btn-buy-now" href={creationWatchesUrl} target="_blank" rel="sponsored nofollow noopener noreferrer">
           CreationWatchesで価格と在庫を見る <span>→</span>
         </a>
       </div>
