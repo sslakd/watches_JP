@@ -5,105 +5,96 @@ import { translateProductName } from '../data/i18n.js';
 import { toJPY } from '../data/jpyRate.js';
 
 const visibleProducts = products.slice(0, 48).map((p) => ({ ...p, jpName: translateProductName(p.name), jpy: toJPY(p.price_usd) }));
-const priceGroups = [
-  { label: '3万円以下', intent: 'はじめての一本', watches: products.filter((p) => p.price_usd > 0 && p.price_usd < 300).slice(0, 4) },
-  { label: '3万円から30万円', intent: '価値を重視', watches: products.filter((p) => p.price_usd >= 300 && p.price_usd < 3000).slice(0, 4) },
-  { label: '30万円以上', intent: '記念品・コレクション', watches: products.filter((p) => p.price_usd >= 3000).slice(0, 4) },
-].filter((group) => group.watches.length > 0).map((group) => ({
-  ...group,
-  watches: group.watches.map((p) => ({ ...p, jpName: translateProductName(p.name), jpy: toJPY(p.price_usd) })),
-}));
+const chapters = [
+  { label: '日常のための一本', title: '3万円以下', copy: '初めての時計にも、気負わない日常にも。', watches: products.filter((p) => p.price_usd > 0 && p.price_usd < 300).slice(0, 4) },
+  { label: '価値を見つける', title: '3万円から30万円', copy: '技術、仕上げ、背景のバランスを楽しむ価格帯。', watches: products.filter((p) => p.price_usd >= 300 && p.price_usd < 3000).slice(0, 4) },
+  { label: '記憶を刻む一本', title: '30万円以上', copy: '節目とともに長く残る、特別な時計。', watches: products.filter((p) => p.price_usd >= 3000).slice(0, 4) },
+].filter((chapter) => chapter.watches.length).map((chapter) => ({ ...chapter, watches: chapter.watches.map((p) => ({ ...p, jpName: translateProductName(p.name), jpy: toJPY(p.price_usd) })) }));
 ---
 
-<BaseLayout title="時計購入ガイド" description="時計の物語と購入判断をつなぐCreationWatches向けアフィリエイトガイド。">
-  <section class="page-hero">
+<BaseLayout title="時計コレクション" description="価格、佇まい、物語から時計を探す購入ガイド。">
+  <section class="collection-hero">
     <div class="container">
-      <p class="eyebrow">Buying Guide Hub</p>
-      <h1>{products.length}本の時計を、購入意図で整理。</h1>
-      <p>価格帯、ブランド、用途から時計を理解し、気になるモデルはCreationWatchesで現在価格を確認できます。</p>
+      <p class="kicker">時計コレクション</p>
+      <h1>価格ではなく、出会い方から時計を探す。</h1>
+      <p>予算、用途、佇まいを手がかりに、自分の時間へ迎えたい一本を見つけてください。</p>
     </div>
   </section>
 
-  <section class="price-groups">
-    <div class="container">
-      <div class="section-heading">
-        <div><p class="eyebrow">検索意図</p><h2>価格帯から読む</h2></div>
-      </div>
-      <div class="group-grid">
-        {priceGroups.map((group) => (
-          <section class="group-panel">
-            <div class="group-header"><span>{group.intent}</span><h3>{group.label}</h3></div>
-            <div class="mini-list">
-              {group.watches.map((watch) => (
-                <a href={watch.url || '#'} class="mini-card" target="_blank" rel="noopener noreferrer">
-                  <img src={watch.image} alt={watch.jpName} loading="lazy" />
-                  <div>
-                    <span>{watch.brand}</span>
-                    <strong>{watch.jpName}</strong>
-                    <em>¥{watch.jpy}</em>
-                    <small>CreationWatchesで価格を確認</small>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="all-watches">
-    <div class="container">
-      <div class="section-heading">
-        <div><p class="eyebrow">Affiliate Feed</p><h2>すべての購入ガイド</h2></div>
-        <span class="count">{visibleProducts.length}本を表示</span>
-      </div>
-      <div class="watch-grid">
-        {visibleProducts.map((watch) => (
-          <a href={watch.url || '#'} class="watch-card" target="_blank" rel="noopener noreferrer">
-            <div class="watch-image">
-              {watch.price_usd > 0 && watch.price_usd < 300 && <span class="badge">Value</span>}
+  <section class="chapters">
+    {chapters.map((chapter, index) => (
+      <article class:list={['chapter', { reverse: index % 2 === 1 }]}>
+        <div class="chapter-copy"><p class="kicker">{chapter.label}</p><h2>{chapter.title}</h2><p>{chapter.copy}</p></div>
+        <div class="chapter-watches">
+          {chapter.watches.map((watch) => (
+            <a href={`/watches/${watch.sku}`}>
               <img src={watch.image} alt={watch.jpName} loading="lazy" />
-            </div>
-            <div class="watch-info">
-              <span>{watch.brand}</span>
-              <h3>{watch.jpName}</h3>
-              <strong>¥{watch.jpy}</strong>
-              <small>CreationWatchesで価格を確認</small>
-            </div>
-          </a>
-        ))}
-      </div>
+              <span>{watch.brand}</span><strong>{watch.jpName}</strong><em>¥{watch.jpy}</em>
+            </a>
+          ))}
+        </div>
+      </article>
+    ))}
+  </section>
+
+  <section class="catalogue">
+    <header class="container catalogue-heading">
+      <div><p class="kicker">すべての時計</p><h2>次の一本を探す。</h2></div>
+      <span>{visibleProducts.length}本を表示</span>
+    </header>
+    <div class="watch-grid">
+      {visibleProducts.map((watch) => (
+        <a href={`/watches/${watch.sku}`} class="watch-card">
+          <div class="watch-image"><img src={watch.image} alt={watch.jpName} loading="lazy" /></div>
+          <div class="watch-info"><span>{watch.brand}</span><h3>{watch.jpName}</h3><div><strong>¥{watch.jpy}</strong><small>詳細を見る →</small></div></div>
+        </a>
+      ))}
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .price-groups { padding: var(--spacing-xl) 0; background: var(--color-surface); }
-  .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 1.5rem; margin-bottom: 2rem; }
-  .count { color: var(--color-muted); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-  .group-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); }
-  .group-panel, .watch-card { background: var(--color-surface); }
-  .group-header { padding: 1.25rem; border-bottom: 1px solid var(--color-border); }
-  .group-header span, .mini-card span, .watch-info span { color: var(--color-gold); font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-  .group-header h3 { margin-top: 0.35rem; }
-  .mini-list { display: grid; }
-  .mini-card { display: grid; grid-template-columns: 74px 1fr; gap: 0.9rem; min-width: 0; padding: 1rem 1.25rem; color: inherit; text-decoration: none; border-bottom: 1px solid var(--color-border); }
-  .mini-card img { width: 74px; height: 74px; object-fit: contain; background: var(--color-soft); }
-  .mini-card div { min-width: 0; display: grid; gap: 0.2rem; align-content: center; }
-  .mini-card strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.84rem; font-weight: 400; }
-  .mini-card em { color: var(--color-accent); font-family: var(--font-serif); font-size: 0.96rem; font-style: normal; }
-  .mini-card small, .watch-info small { color: var(--color-muted); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
-  .all-watches { padding: var(--spacing-xl) 0 var(--spacing-2xl); }
-  .watch-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); }
-  .watch-card { display: flex; flex-direction: column; min-width: 0; color: inherit; text-decoration: none; }
-  .watch-image { position: relative; display: grid; place-items: center; aspect-ratio: 1; padding: 1rem; background: #f7f3ed; }
-  .watch-image img { width: 100%; height: 100%; object-fit: contain; }
-  .badge { position: absolute; top: 0.7rem; left: 0.7rem; background: var(--color-text); color: white; padding: 0.25rem 0.45rem; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-  .watch-info { display: grid; gap: 0.35rem; padding: 1rem; }
-  .watch-info h3 { display: -webkit-box; min-height: 3.4em; overflow: hidden; font-family: var(--font-sans); font-size: 0.86rem; font-weight: 400; line-height: 1.7; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .watch-info strong { color: var(--color-accent); font-family: var(--font-serif); font-size: 1rem; }
-  @media (max-width: 1040px) { .group-grid { grid-template-columns: 1fr; } .watch-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 720px) { .section-heading { align-items: start; flex-direction: column; } .watch-grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (max-width: 480px) { .watch-grid { grid-template-columns: 1fr; } }
+  .container { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; }
+  .kicker { margin-bottom: 1.3rem; font-size: .68rem; font-weight: 700; letter-spacing: .16em; }
+  .collection-hero { min-height: 650px; display: grid; align-items: end; padding-bottom: 7rem; color: #fff; background: #293a36; }
+  .collection-hero h1 { max-width: 920px; font-size: 4.4rem; line-height: 1.35; }
+  .collection-hero .container > p:last-child { max-width: 620px; margin-top: 2rem; }
+  .chapter { display: grid; grid-template-columns: 38% 62%; min-height: 680px; }
+  .chapter.reverse { grid-template-columns: 62% 38%; }
+  .chapter.reverse .chapter-copy { order: 2; color: #fff; background: #293a36; }
+  .chapter-copy { display: flex; flex-direction: column; justify-content: center; padding: 5rem; background: #e6dfd3; }
+  .chapter-copy h2 { font-size: 3.2rem; }
+  .chapter-copy > p:last-child { max-width: 360px; margin-top: 1.5rem; }
+  .chapter-watches { display: grid; grid-template-columns: repeat(2, 1fr); background: #e8ede9; }
+  .chapter-watches a { min-width: 0; display: grid; grid-template-rows: 1fr auto auto auto; padding: 2rem; color: inherit; text-decoration: none; border: 1px solid rgba(38,58,56,.12); }
+  .chapter-watches img { width: 100%; height: 390px; object-fit: contain; mix-blend-mode: multiply; transition: transform .4s; }
+  .chapter-watches a:hover img { transform: scale(1.04); }
+  .chapter-watches span, .watch-info > span { font-size: .62rem; font-weight: 700; letter-spacing: .1em; }
+  .chapter-watches strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .82rem; font-weight: 400; }
+  .chapter-watches em { color: #52665f; font-family: var(--font-serif); font-style: normal; }
+  .catalogue { padding: 9rem 0; background: #fff; }
+  .catalogue-heading { display: flex; justify-content: space-between; align-items: end; margin-bottom: 4rem; }
+  .catalogue-heading h2 { font-size: 3.5rem; }
+  .catalogue-heading > span { color: var(--color-muted); font-size: .72rem; letter-spacing: .1em; }
+  .watch-grid { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--color-border); border-left: 1px solid var(--color-border); }
+  .watch-card { min-width: 0; color: inherit; text-decoration: none; border-right: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+  .watch-image { aspect-ratio: 1; display: grid; place-items: center; padding: 1.5rem; background: #f5f6f3; }
+  .watch-image img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
+  .watch-info { padding: 1.25rem; }
+  .watch-info h3 { min-height: 3.7em; margin: .5rem 0 1rem; overflow: hidden; font-family: var(--font-sans); font-size: .82rem; font-weight: 400; line-height: 1.85; }
+  .watch-info div { display: flex; justify-content: space-between; gap: 1rem; }
+  .watch-info strong { font-family: var(--font-serif); }
+  .watch-info small { color: var(--color-muted); }
+  @media (max-width: 900px) {
+    .collection-hero h1 { font-size: 3rem; }
+    .chapter, .chapter.reverse { grid-template-columns: 1fr; }
+    .chapter.reverse .chapter-copy { order: 0; }
+    .chapter-copy { padding: 4rem 2rem; }
+    .watch-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .chapter-watches, .watch-grid { grid-template-columns: 1fr; }
+    .catalogue-heading { align-items: start; flex-direction: column; gap: 1rem; }
+    .catalogue-heading h2, .chapter-copy h2 { font-size: 2.4rem; }
+  }
 </style>

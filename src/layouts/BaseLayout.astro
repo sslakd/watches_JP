@@ -109,6 +109,100 @@ const canonicalUrl = new URL(canonicalPath || '/', 'https://tokeimonogatari.com'
         .footer-inner { flex-direction: column; }
       }
     </style>
+    <style is:global>
+      main > .story-article {
+        max-width: 920px !important;
+        padding: 5rem 1.5rem 8rem !important;
+      }
+      main > .story-article .story-header {
+        max-width: 820px;
+        margin: 0 auto 4rem !important;
+      }
+      main > .story-article .story-header h1 {
+        font-size: 3.7rem !important;
+        line-height: 1.35 !important;
+      }
+      main > .story-article .story-hero-img {
+        min-height: 620px !important;
+        margin: 0 0 5rem !important;
+        padding: 4rem !important;
+        display: grid !important;
+        place-items: center !important;
+        overflow: hidden;
+        background: #e8ede9 !important;
+        border: 0 !important;
+      }
+      main > .story-article .story-hero-img img {
+        width: auto !important;
+        max-width: 88% !important;
+        height: 520px !important;
+        max-height: 520px !important;
+        object-fit: contain !important;
+      }
+      main > .story-article .story-hero-img img[src^="http"] {
+        mix-blend-mode: multiply;
+      }
+      main > .story-article .story-body {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      main > .story-article .story-lede {
+        margin-bottom: 4rem !important;
+        padding-left: 1.5rem !important;
+        font-size: 1.08rem !important;
+      }
+      main > .story-article .story-body h2 {
+        margin-top: 4.5rem !important;
+        font-size: 1.75rem !important;
+      }
+      main > .story-article .story-quote {
+        margin: 4rem 0 !important;
+        padding: 2.5rem 3rem !important;
+        border-radius: 0 !important;
+      }
+      main > .story-article .story-specs {
+        margin: 4rem 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+      }
+      main > .story-article .story-cta {
+        margin-top: 5rem !important;
+        padding: 3.5rem 2rem !important;
+        border-radius: 0 !important;
+        border-top: 1px solid var(--color-border);
+        border-bottom: 1px solid var(--color-border);
+        background: #f0ece4 !important;
+      }
+      main > .story-article .story-cta a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 46px;
+        padding: .85rem 1.25rem;
+        color: #fff;
+        background: #293a36;
+        border: 1px solid #293a36;
+        text-decoration: none;
+        font-size: .76rem;
+        font-weight: 700;
+        letter-spacing: .08em;
+      }
+      @media (max-width: 700px) {
+        main > .story-article { padding: 3rem .75rem 5rem !important; }
+        main > .story-article .story-header h1 { font-size: 2.35rem !important; }
+        main > .story-article .story-hero-img {
+          min-height: 460px !important;
+          margin-bottom: 3rem !important;
+          padding: 2rem 1rem !important;
+        }
+        main > .story-article .story-hero-img img {
+          max-width: 100% !important;
+          height: 400px !important;
+        }
+        main > .story-article .story-body h2 { font-size: 1.5rem !important; }
+        main > .story-article .story-quote { padding: 1.5rem !important; }
+      }
+    </style>
   </head>
   <body>
     <header class="site-header">

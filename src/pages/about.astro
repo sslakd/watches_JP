@@ -2,33 +2,71 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="このサイトについて" description="時計物語はCreationWatchesへの送客を目的にした編集型アフィリエイトサイトです。">
-  <section class="page-hero">
-    <div class="container">
-      <p class="eyebrow">このサイトについて</p>
-      <h1>時計物語は、時計店ではありません。</h1>
-      <p>時計の背景、選び方、価格帯を編集記事として整理し、購入を検討する読者をCreationWatchesへ案内するサイトです。</p>
+<BaseLayout title="このサイトについて" description="時計物語が、購入リンクより先に時計の背景を伝える理由。">
+  <section class="about-hero">
+    <div class="container hero-inner">
+      <p class="kicker">時計物語の考え方</p>
+      <h1>時計は、手に入れる前から、心に残りはじめる。</h1>
+      <p class="intro">技術、土地、つくり手の思想。一本を選ぶ時間そのものが、記憶になるように。</p>
     </div>
   </section>
 
-  <section class="about-body">
-    <div class="container about-grid">
-      <div>
-        <p class="eyebrow">方針</p>
-        <h2>購入クリックの前に、読む理由を作る。</h2>
+  <section class="manifesto">
+    <div class="container manifesto-grid">
+      <div><p class="kicker">このサイトの役割</p><h2>カタログではなく、<br />出会いをつくる。</h2></div>
+      <div class="copy">
+        <p>仕様表は時計を説明できます。しかし、なぜその一本が心に残るのかまでは語れません。</p>
+        <p>時計物語は、背景と佇まいを丁寧に伝えたあとで、CreationWatchesの現在価格と在庫へ案内します。</p>
       </div>
-      <div class="about-copy">
-        <p>読者は、いきなり商品ページに行く前に「どの時計が自分に合うのか」を知りたいものです。</p>
-        <p>時計物語では、ブランドの背景、使う場面、価格帯、モデルの魅力を物語として伝えます。</p>
-        <p>アフィリエイト開示: 当サイトのCreationWatchesリンクから購入が行われた場合、当サイトが手数料を受け取ることがあります。読者の購入価格が上がることはありません。</p>
-      </div>
+    </div>
+  </section>
+
+  <section class="principles">
+    <div class="principle dark"><span>一</span><h3>姿と出会う</h3><p>形、素材、色。最初の印象を急がずに味わう。</p></div>
+    <div class="principle light"><span>二</span><h3>背景を知る</h3><p>技術と歴史が、時計に固有の表情を与えます。</p></div>
+    <div class="principle green"><span>三</span><h3>自分で選ぶ</h3><p>物語を読んだあとに、価格と在庫を確認する。</p></div>
+  </section>
+
+  <section class="disclosure">
+    <div class="container">
+      <p class="kicker">透明性について</p>
+      <h2>物語は独立して。リンクは明確に。</h2>
+      <p>CreationWatchesへのリンクを通じて購入された場合、当サイトが手数料を受け取ることがあります。読者の購入価格が上がることはありません。</p>
+      <a href="/watches">時計を探す <span>→</span></a>
     </div>
   </section>
 </BaseLayout>
 
 <style>
-  .about-body { padding: var(--spacing-xl) 0 var(--spacing-2xl); }
-  .about-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: 4rem; align-items: start; }
-  .about-copy { display: grid; gap: 1.25rem; color: var(--color-subtle); font-size: 1rem; line-height: 2; }
-  @media (max-width: 760px) { .about-grid { grid-template-columns: 1fr; gap: 2rem; } }
+  .container { width: min(1180px, calc(100% - 2rem)); margin: 0 auto; }
+  .kicker { margin-bottom: 1.5rem; font-size: .68rem; font-weight: 700; letter-spacing: .16em; }
+  .about-hero { min-height: 720px; display: grid; align-items: end; color: #fff; background: #293a36; }
+  .hero-inner { padding-bottom: 7rem; }
+  .about-hero h1 { max-width: 920px; font-size: 4.4rem; line-height: 1.35; }
+  .intro { max-width: 620px; margin-top: 2rem; font-size: 1rem; line-height: 2; }
+  .manifesto { padding: 10rem 0; background: #f5f1e9; }
+  .manifesto-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 8rem; }
+  .manifesto h2, .disclosure h2 { font-size: 3.5rem; line-height: 1.45; }
+  .copy { display: grid; gap: 2rem; color: var(--color-subtle); font-size: 1rem; line-height: 2.1; }
+  .principles { display: grid; grid-template-columns: repeat(3, 1fr); }
+  .principle { min-height: 520px; display: flex; flex-direction: column; justify-content: end; padding: 4rem; }
+  .principle span { margin-bottom: auto; }
+  .principle h3 { font-size: 2rem; }
+  .principle p { margin-top: 1.25rem; }
+  .dark { color: #fff; background: #1d2927; }
+  .light { background: #e8e1d6; }
+  .green { color: #fff; background: #4d625b; }
+  .disclosure { padding: 10rem 0; text-align: center; background: #fff; }
+  .disclosure .container { max-width: 900px; }
+  .disclosure > .container > p:not(.kicker) { max-width: 680px; margin: 2rem auto; color: var(--color-muted); }
+  .disclosure a { display: inline-flex; gap: 1rem; padding-bottom: .4rem; border-bottom: 1px solid; color: inherit; text-decoration: none; font-size: .78rem; font-weight: 700; letter-spacing: .08em; }
+  @media (max-width: 800px) {
+    .about-hero { min-height: 650px; }
+    .about-hero h1 { font-size: 2.8rem; }
+    .manifesto-grid, .principles { grid-template-columns: 1fr; }
+    .manifesto { padding: 6rem 0; }
+    .manifesto-grid { gap: 3rem; }
+    .manifesto h2, .disclosure h2 { font-size: 2.4rem; }
+    .principle { min-height: 420px; padding: 2rem; }
+  }
 </style>
