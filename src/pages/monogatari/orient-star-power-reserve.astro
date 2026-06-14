@@ -15,7 +15,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     </header>
 
     <div class="story-hero-img">
-      <img src="https://cdnstatic.creationwatches.com/products/product-images/l/RE-AU0001S00B_LRG.webp" alt="Orient Star RE-AU0001S00B" />
+      <img src="/images/watches/RE-AU0001S00B-transparent.webp" alt="Orient Star RE-AU0001S00B" />
     </div>
 
     <div class="story-body">
@@ -66,8 +66,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
       </div>
 
       <div class="story-cta">
-        <p>この時計を含む数百もの製品が、あなたの物語の一部になるのを待っています。</p>
-        <a href="/monogatari" class="btn">他の物語を見る</a>
+        <p>この時計を自分の時間へ迎えたい方は、現在の価格と在庫をご確認ください。</p>
+        <a href="https://www.creationwatches.com/products/orient-watches-252/orient-star-automatic-power-reserve-japan-made-re-au0001s00b-mens-watch-14473.html" class="purchase-link" target="_blank" rel="sponsored nofollow noopener noreferrer">CreationWatchesで価格を見る <span>→</span></a>
       </div>
     </div>
   </article>
@@ -79,8 +79,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   .story-category { font-size: 0.65rem; letter-spacing: 0.25em; color: var(--color-gold); text-transform: uppercase; margin-bottom: 1rem; font-weight: 500; }
   .story-header h1 { font-size: 2.5rem; line-height: 1.4; margin-bottom: 1rem; }
   .story-meta-line { font-size: 0.78rem; color: var(--color-muted); display: flex; justify-content: center; gap: 0.5rem; }
-  .story-hero-img { margin: 0 -1.5rem 3rem; text-align: center; background: var(--color-border); padding: 3rem; }
-  .story-hero-img img { max-width: 280px; height: auto; }
+  .story-hero-img { display: grid; place-items: center; min-height: 520px; margin: 0 -1.5rem 3rem; background: #e8ede9; padding: 3rem; overflow: hidden; }
+  .story-hero-img img { width: auto; max-width: 100%; height: 440px; object-fit: contain; }
   .story-body { font-size: 0.95rem; line-height: 2; color: var(--color-text); letter-spacing: 0.03em; }
   .story-lede { font-size: 1.1rem; line-height: 1.9; color: var(--color-muted); font-style: italic; margin-bottom: 2rem; padding-left: 1rem; border-left: 3px solid var(--color-gold); }
   .story-body h2 { font-family: var(--font-serif); font-size: 1.4rem; margin-top: 3rem; margin-bottom: 1rem; letter-spacing: 0.08em; }
@@ -93,6 +93,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
   .story-specs li:last-child { border-bottom: none; }
   .story-cta { text-align: center; margin-top: 3rem; padding: 2rem; background: linear-gradient(to bottom, transparent, var(--color-border)); border-radius: 8px; }
   .story-cta p { font-size: 0.85rem; color: var(--color-muted); margin-bottom: 1.5rem; }
+  .purchase-link { display: inline-flex; align-items: center; gap: 1rem; padding: .85rem 1.25rem; color: #fff; background: #293a36; border: 1px solid #293a36; text-decoration: none; font-size: .78rem; font-weight: 700; letter-spacing: .08em; }
   @media (max-width: 600px) {
     .story-article { padding: 2rem 1rem; }
     .story-header h1 { font-size: 1.8rem; }
