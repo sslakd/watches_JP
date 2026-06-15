@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import products from '../../data/products.json';
 import { translateProductName, translateCategory, translateDescription } from '../../data/i18n.js';
 import { toJPY } from '../../data/jpyRate.js';
+import { creationWatchesSearchUrl } from '../../utils/creationWatches.js';
 
 export async function getStaticPaths() {
   return products.map((product) => ({
@@ -12,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { product } = Astro.props;
-const creationWatchesUrl = `https://www.creationwatches.com/products/ja/search?keyword=${encodeURIComponent(product.sku)}`;
+const creationWatchesUrl = creationWatchesSearchUrl(product.sku);
 const sameBrand = products.filter(p => p.brand === product.brand && p.sku !== product.sku).slice(0, 6);
 const samePrice = products.filter(p => Math.abs(p.price_usd - product.price_usd) < 50 && p.sku !== product.sku).slice(0, 3);
 const relatedAll = [...sameBrand, ...samePrice].slice(0, 6).map(r => ({
